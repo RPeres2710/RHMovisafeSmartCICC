@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Central RH — Movisafe</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#eef2f8; --surface:#fff; --surface2:#f4f7fc; --surface3:#e8edf7;
+  --border:#d8e0ef; --accent:#2563eb; --accent2:#3b82f6;
+  --green:#059669; --amber:#b45309; --red:#dc2626; --purple:#7c3aed; --pink:#be185d;
+  --movisafe:#2563eb; --smartcicc:#7c3aed;
+  --text:#0f172a; --text2:#475569; --text3:#94a3b8;
+  --radius:12px; --radius-sm:8px;
+  --shadow:0 1px 3px rgba(15,23,42,.06),0 4px 12px rgba(15,23,42,.08);
+  --sidebar-bg:#1e293b; --sidebar-text:rgba(255,255,255,.65); --sidebar-border:rgba(255,255,255,.1);
+}
+body.dark {
+  --bg:#0b0f1a; --surface:#111827; --surface2:#1a2236; --surface3:#222d42;
+  --border:#2a3a56; --accent:#3b82f6; --accent2:#60a5fa;
+  --green:#10b981; --amber:#f59e0b; --red:#ef4444; --purple:#8b5cf6;
+  --text:#e2e8f0; --text2:#94a3b8; --text3:#64748b;
+  --shadow:0 2px 8px rgba(0,0,0,.4);
+  --sidebar-bg:#0d1424;
+}
+body.dark .badge-movisafe{background:rgba(59,130,246,.2);color:#93c5fd}
+body.dark .badge-smartcicc{background:rgba(139,92,246,.2);color:#c4b5fd}
+body.dark .badge-ativo{background:rgba(16,185,129,.2);color:#6ee7b7}
+body.dark .badge-ferias{background:rgba(245,158,11,.2);color:#fcd34d}
+body.dark .badge-afastado{background:rgba(239,68,68,.2);color:#fca5a5}
+body.dark .badge-experiencia{background:rgba(236,72,153,.2);color:#f9a8d4}
+body.dark tr:hover td{background:#1e2d48}
+body.dark td{border-bottom-color:rgba(42,58,86,.5)}
+body.dark .notif-warn{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.25)}
+body.dark .notif-info{background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.25)}
+body.dark .notif-error{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.25)}
+body.dark .notif-success{background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.25)}
+body.dark .doc-action-btn.preview{background:rgba(59,130,246,.1)}
+body.dark .doc-action-btn.open{background:rgba(16,185,129,.1)}
+body.dark .doc-action-btn.remove{background:var(--surface2)}
+body.dark .badge-imp{background:rgba(220,38,38,.2);color:#fca5a5}
+body.dark .badge-nec{background:rgba(37,99,235,.2);color:#93c5fd}
+body.dark .badge-opc{background:rgba(5,150,105,.2);color:#6ee7b7}
+body.dark .badge-ok{background:rgba(5,150,105,.2);color:#6ee7b7}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
+#app{display:flex;height:100vh}
+
+/* SIDEBAR */
+#sidebar{width:240px;min-width:240px;background:var(--sidebar-bg);display:flex;flex-direction:column;overflow:hidden;box-shadow:2px 0 12px rgba(15,23,42,.12)}
+.logo-bar{padding:20px 20px 16px;border-bottom:1px solid var(--sidebar-border)}
+.logo-title{font-family:'Outfit',sans-serif;font-weight:800;font-size:18px;color:#fff;letter-spacing:-.5px}
+.logo-sub{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;letter-spacing:1px;text-transform:uppercase}
+.nav-section{padding:12px 12px 4px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.35);font-weight:600}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;margin:1px 8px;border-radius:var(--radius-sm);cursor:pointer;font-size:13.5px;color:var(--sidebar-text);transition:.15s}
+.nav-item:hover{background:rgba(255,255,255,.08);color:#fff}
+.nav-item.active{background:var(--accent);color:#fff}
+.nav-item .icon{font-size:16px;width:20px;text-align:center}
+.sidebar-footer{margin-top:auto;padding:12px;border-top:1px solid var(--sidebar-border)}
+.badge-count{margin-left:auto;background:var(--red);color:#fff;font-size:10px;padding:1px 6px;border-radius:20px;font-weight:700}
+
+/* MAIN */
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+#topbar{height:56px;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:16px;background:var(--surface);box-shadow:0 1px 4px rgba(15,23,42,.06)}
+.topbar-title{font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;flex:1}
+.search-box{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 12px;width:260px}
+.search-box input{background:none;border:none;outline:none;color:var(--text);font-size:13px;width:100%;font-family:'Plus Jakarta Sans',sans-serif}
+.search-box input::placeholder{color:var(--text3)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--radius-sm);border:none;cursor:pointer;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:500;transition:.15s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent2)}
+.btn-ghost{background:var(--surface2);color:var(--text2);border:1px solid var(--border)}
+.btn-ghost:hover{color:var(--text);background:var(--surface3)}
+
+#content{flex:1;overflow-y:auto;padding:24px}
+#content::-webkit-scrollbar{width:4px}
+#content::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.page{display:none}.page.active{display:block}
+
+/* CARDS */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow)}
+.stat-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);font-weight:600}
+.stat-value{font-family:'Outfit',sans-serif;font-size:32px;font-weight:800;margin:6px 0 2px}
+.stat-sub{font-size:12px;color:var(--text3)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.card-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.card-title{font-family:'Outfit',sans-serif;font-weight:700;font-size:14px;flex:1}
+.filter-tabs{display:flex;gap:4px;flex-wrap:wrap}
+.ftab{padding:5px 12px;border-radius:6px;font-size:12px;cursor:pointer;border:1px solid var(--border);color:var(--text2);background:transparent;transition:.15s;font-family:'Plus Jakarta Sans',sans-serif}
+.ftab.active,.ftab.movisafe.active{background:var(--movisafe);border-color:var(--movisafe);color:#fff}
+.ftab.smartcicc.active{background:var(--smartcicc);border-color:var(--smartcicc);color:#fff}
+table{width:100%;border-collapse:collapse}
+th{padding:10px 16px;text-align:left;font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:var(--text3);font-weight:600;border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:12px 16px;font-size:13px;border-bottom:1px solid var(--border)}
+body:not(.dark) td{border-bottom-color:#eef2f8}
+tr:hover td{background:#f0f5ff}
+tr:last-child td{border-bottom:none}
+.emp-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-weight:700;font-size:13px;color:#fff;overflow:hidden;flex-shrink:0}
+.emp-info{display:flex;align-items:center;gap:10px}
+.emp-name{font-weight:500;white-space:nowrap}
+.emp-role{font-size:11px;color:var(--text3);white-space:nowrap}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+.badge-movisafe{background:#dbeafe;color:#1d4ed8}
+.badge-smartcicc{background:#ede9fe;color:#6d28d9}
+.badge-ativo{background:#d1fae5;color:#065f46}
+.badge-ferias{background:#fef3c7;color:#92400e}
+.badge-afastado{background:#fee2e2;color:#991b1b}
+.badge-experiencia{background:#fce7f3;color:#9d174d}
+.action-btn{padding:5px 10px;border-radius:6px;font-size:12px;cursor:pointer;border:1px solid var(--border);color:var(--text2);background:transparent;font-family:'Plus Jakarta Sans',sans-serif;transition:.15s}
+.action-btn:hover{border-color:var(--accent);color:var(--accent)}
+.action-btn.danger{border-color:rgba(220,38,38,.35);color:var(--red)}
+.action-btn.danger:hover{border-color:var(--red);color:#fff;background:var(--red)}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:100;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;width:900px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(15,23,42,.2)}
+.modal::-webkit-scrollbar{width:4px}
+.modal::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.modal-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.modal-title{font-family:'Outfit',sans-serif;font-weight:800;font-size:18px;flex:1}
+.modal-close{background:none;border:none;color:var(--text2);cursor:pointer;font-size:20px;padding:4px}
+.modal-body{padding:24px}
+.tab-bar{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px;overflow-x:auto}
+.tab-btn{padding:10px 16px;font-size:13px;cursor:pointer;border:none;background:none;color:var(--text3);font-family:'Plus Jakarta Sans',sans-serif;border-bottom:2px solid transparent;transition:.15s;margin-bottom:-1px;white-space:nowrap}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-content{display:none}.tab-content.active{display:block}
+
+/* FORM */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-full{grid-column:1/-1}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-group label{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);font-weight:600}
+.form-group input,.form-group select,.form-group textarea{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;color:var(--text);font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;transition:.15s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent)}
+.form-group select option{background:var(--surface2)}
+.form-group textarea{resize:vertical;min-height:80px}
+.section-title{font-family:'Outfit',sans-serif;font-weight:700;font-size:13px;color:var(--accent);text-transform:uppercase;letter-spacing:1px;padding-bottom:8px;border-bottom:1px solid var(--border);margin:20px 0 16px;grid-column:1/-1}
+
+/* PHOTO */
+.photo-upload{width:90px;height:115px;border-radius:6px;border:2px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:.15s;background:var(--surface2);overflow:hidden;position:relative}
+.photo-upload:hover{border-color:var(--accent);background:#eff6ff}
+.photo-upload img{width:100%;height:100%;object-fit:cover;object-position:top center;position:absolute;top:0;left:0}
+.photo-upload-hint{font-size:10px;color:var(--text3);text-align:center;margin-top:6px;line-height:1.4}
+.photo-area{display:flex;flex-direction:column;align-items:center;gap:6px}
+
+/* PDF DROP */
+.pdf-drop-zone{border:2px dashed var(--border);border-radius:var(--radius);padding:24px;text-align:center;cursor:pointer;transition:.2s;background:var(--surface2);min-height:90px;display:flex;align-items:center;justify-content:center;grid-column:1/-1}
+.pdf-drop-zone:hover,.pdf-drop-zone.drag-over{border-color:var(--accent);background:#eff6ff}
+
+/* DOCUMENTOS DE ADMISSÃO */
+.doc-section-header{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;padding:6px 0;margin-top:16px;margin-bottom:4px;border-bottom:2px solid var(--border);display:flex;align-items:center;gap:6px}
+.doc-section-header:first-of-type{margin-top:0}
+.doc-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface2);margin-bottom:5px;transition:.15s}
+.doc-item:hover{background:var(--surface3)}
+.doc-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.dot-red{background:#dc2626}.dot-blue{background:#2563eb}.dot-green-doc{background:#059669}
+.doc-name{flex:1;font-size:12.5px;line-height:1.4}
+.doc-name.bold{font-weight:600;color:var(--text)}
+.doc-name.normal{color:var(--text2)}
+.doc-name.soft{color:var(--text3)}
+.doc-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;flex-shrink:0;white-space:nowrap}
+.badge-imp{background:#fee2e2;color:#991b1b}
+.badge-nec{background:#dbeafe;color:#1d4ed8}
+.badge-opc{background:#d1fae5;color:#065f46}
+.badge-ok{background:#d1fae5;color:#065f46}
+.doc-upload-btn{font-size:11px;padding:4px 10px;border-radius:6px;cursor:pointer;flex-shrink:0;border:1px solid var(--border);background:var(--surface);color:var(--text2);font-family:'Plus Jakarta Sans',sans-serif;font-weight:500;transition:.15s;white-space:nowrap}
+.doc-upload-btn:hover{border-color:var(--accent);color:var(--accent);background:#eff6ff}
+.doc-legend{display:flex;gap:14px;flex-wrap:wrap;padding:10px 12px;background:var(--surface2);border-radius:var(--radius-sm);margin-bottom:14px;border:1px solid var(--border)}
+.doc-legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text3)}
+.doc-progress-bar{height:6px;border-radius:4px;background:var(--border);overflow:hidden;margin-bottom:14px}
+.doc-progress-fill{height:100%;border-radius:4px;background:var(--green);transition:.4s}
+.doc-progress-label{font-size:11px;color:var(--text3);margin-bottom:6px;display:flex;justify-content:space-between}
+.doc-actions{display:flex;align-items:center;gap:5px;flex-wrap:nowrap}
+.doc-filename{font-size:11px;color:var(--text2);white-space:nowrap;overflow:hidden;max-width:110px;text-overflow:ellipsis}
+.doc-action-btn{font-size:11px;padding:4px 9px;border-radius:6px;cursor:pointer;flex-shrink:0;white-space:nowrap;font-family:'Plus Jakarta Sans',sans-serif;font-weight:500;transition:.15s;border:1px solid}
+.doc-action-btn.preview{border-color:var(--accent);color:var(--accent);background:rgba(37,99,235,.07)}
+.doc-action-btn.preview:hover{background:rgba(37,99,235,.15)}
+.doc-action-btn.open{border-color:var(--green);color:var(--green);background:rgba(5,150,105,.07)}
+.doc-action-btn.open:hover{background:rgba(5,150,105,.15)}
+.doc-action-btn.remove{border-color:var(--border);color:var(--text3);background:var(--surface)}
+.doc-action-btn.remove:hover{border-color:var(--red);color:var(--red)}
+.doc-hover{
+  position:fixed; z-index:220; pointer-events:none; display:none;
+  width:220px; height:140px; background:#111; border-radius:8px;
+  box-shadow:0 10px 30px rgba(0,0,0,.35); overflow:hidden;
+}
+.doc-hover img{width:100%;height:100%;object-fit:contain;display:block}
+
+/* NOTIFS */
+.notif{display:flex;align-items:flex-start;gap:10px;padding:12px;border-radius:var(--radius-sm);margin-bottom:8px}
+.notif-warn{background:#fffbeb;border:1px solid #fde68a}
+.notif-info{background:#eff6ff;border:1px solid #bfdbfe}
+.notif-error{background:#fef2f2;border:1px solid #fecaca}
+.notif-success{background:#ecfdf5;border:1px solid #a7f3d0}
+.notif-icon{font-size:16px;margin-top:1px;flex-shrink:0}
+.notif-body{flex:1}
+.notif-title{font-size:13px;font-weight:500}
+.notif-sub{font-size:11px;color:var(--text3);margin-top:2px}
+
+/* FERIAS BAR */
+.ferias-bar-wrap{background:var(--surface3);border-radius:8px;overflow:hidden;height:8px;margin-top:4px}
+.ferias-bar{height:100%;border-radius:8px;background:var(--green);transition:.3s}
+
+/* ESOCIAL */
+.esocial-status{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--surface2);border-radius:var(--radius-sm);margin-bottom:8px;border:1px solid var(--border)}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dot-green{background:var(--green)}
+.dot-amber{background:var(--amber)}
+.dot-red-s{background:var(--red)}
+
+/* MISC */
+.flex-row{display:flex;align-items:center;gap:12px}
+.ml-auto{margin-left:auto}
+.progress-mini{height:6px;background:var(--surface3);border-radius:4px;overflow:hidden;margin-top:6px}
+.progress-fill{height:100%;border-radius:4px}
+.empty-state{text-align:center;padding:40px;color:var(--text3)}
+.empty-icon{font-size:40px;margin-bottom:12px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+/* SETTINGS */
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)}
+.settings-row:last-child{border-bottom:none}
+.settings-label{font-size:14px;font-weight:500}
+.settings-sub{font-size:12px;color:var(--text3);margin-top:2px}
+.toggle{width:44px;height:24px;background:var(--border);border-radius:20px;position:relative;cursor:pointer;transition:.25s;border:none;outline:none;flex-shrink:0}
+.toggle.on{background:var(--accent)}
+.toggle::after{content:'';position:absolute;width:18px;height:18px;background:#fff;border-radius:50%;top:3px;left:3px;transition:.25s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle.on::after{left:23px}
+
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+
+/* Responsive fixes */
+@media (max-width:900px){
+  .two-col{grid-template-columns:1fr}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .three-col{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- SIDEBAR -->
+<div id="sidebar">
+  <div class="logo-bar">
+    <div class="logo-title">🛡 Movisafe</div>
+    <div class="logo-sub">Central de RH</div>
+  </div>
+  <div style="overflow-y:auto;flex:1;padding-bottom:8px;">
+    <div class="nav-section">Principal</div>
+    <div class="nav-item active" onclick="navTo(this,'dashboard')"><span class="icon">📊</span> Dashboard</div>
+    <div class="nav-item" onclick="navTo(this,'funcionarios')"><span class="icon">👥</span> Funcionários</div>
+    <div class="nav-section">Gestão</div>
+    <div class="nav-item" onclick="navTo(this,'ferias')"><span class="icon">🌴</span> Férias</div>
+    <div class="nav-item" onclick="navTo(this,'atestados')"><span class="icon">🏥</span> Atestados</div>
+    <div class="nav-item" onclick="navTo(this,'disciplina')"><span class="icon">⚖️</span> Disciplina</div>
+    <div class="nav-item" onclick="navTo(this,'esocial')"><span class="icon">📋</span> e-Social</div>
+    <div class="nav-section">Empresa</div>
+    <div class="nav-item" onclick="navTo(this,'relatorios')"><span class="icon">📁</span> Relatórios</div>
+    <div class="nav-item" id="nav-alertas" onclick="navTo(this,'alertas')"><span class="icon">🔔</span> Alertas<span class="badge-count" id="alert-badge-count">0</span></div>
+  </div>
+  <div class="sidebar-footer">
+    <div class="nav-item" onclick="openSettings()"><span class="icon">⚙️</span> Configurações</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+  <div id="topbar">
+    <div class="topbar-title" id="page-title">Dashboard</div>
+    <div class="search-box"><span>🔍</span><input type="text" placeholder="Buscar funcionário..." id="search-input" oninput="filterEmployees()"></div>
+    <button class="btn btn-primary" onclick="openModal('add')">+ Novo Funcionário</button>
+  </div>
+
+  <div id="content">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-label">Movisafe</div><div class="stat-value" id="cnt-movisafe" style="color:var(--movisafe)">0</div><div class="stat-sub">funcionários ativos</div></div>
+        <div class="stat-card"><div class="stat-label">Smart CICC</div><div class="stat-value" id="cnt-smartcicc" style="color:var(--smartcicc)">0</div><div class="stat-sub">funcionários ativos</div></div>
+        <div class="stat-card"><div class="stat-label">Em Experiência</div><div class="stat-value" id="cnt-experiencia" style="color:var(--amber)">0</div><div class="stat-sub">período de 30 dias</div></div>
+        <div class="stat-card"><div class="stat-label">Total Geral</div><div class="stat-value" id="cnt-total" style="color:var(--green)">0</div><div class="stat-sub">todos os vínculos</div></div>
+      </div>
+      <div class="two-col" style="margin-bottom:16px">
+        <div class="card">
+          <div class="card-header"><div class="card-title">🔔 Alertas do Sistema</div></div>
+          <div style="padding:16px">
+            <div class="notif notif-error"><div class="notif-icon">⚠️</div><div class="notif-body"><div class="notif-title">Férias vencidas</div><div class="notif-sub" id="alerta-ferias-atrasadas">Verificando...</div></div></div>
+            <div class="notif notif-warn"><div class="notif-icon">📅</div><div class="notif-body"><div class="notif-title">Período de experiência encerrando</div><div class="notif-sub" id="alerta-experiencia">Verificando...</div></div></div>
+            <div class="notif notif-info"><div class="notif-icon">🌴</div><div class="notif-body"><div class="notif-title">Férias programadas</div><div class="notif-sub" id="alerta-ferias-prog">Verificando...</div></div></div>
+            <div class="notif notif-success"><div class="notif-icon">📋</div><div class="notif-body"><div class="notif-title">e-Social pendente</div><div class="notif-sub" id="alerta-esocial">Verificando...</div></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">📊 Distribuição por Status</div></div>
+          <div style="padding:20px;display:flex;flex-direction:column;gap:14px">
+            <div><div class="flex-row"><span style="font-size:13px">✅ Ativos</span><span class="ml-auto" id="dash-ativos" style="font-family:'Outfit';font-weight:700;color:var(--green)">0</span></div><div class="progress-mini"><div class="progress-fill" id="bar-ativos" style="background:var(--green);width:0%"></div></div></div>
+            <div><div class="flex-row"><span style="font-size:13px">🌴 Em Férias</span><span class="ml-auto" id="dash-ferias" style="font-family:'Outfit';font-weight:700;color:var(--amber)">0</span></div><div class="progress-mini"><div class="progress-fill" id="bar-ferias" style="background:var(--amber);width:0%"></div></div></div>
+            <div><div class="flex-row"><span style="font-size:13px">🩺 Afastados</span><span class="ml-auto" id="dash-afastados" style="font-family:'Outfit';font-weight:700;color:var(--red)">0</span></div><div class="progress-mini"><div class="progress-fill" id="bar-afastados" style="background:var(--red);width:0%"></div></div></div>
+            <div><div class="flex-row"><span style="font-size:13px">🧪 Experiência</span><span class="ml-auto" id="dash-exp" style="font-family:'Outfit';font-weight:700;color:var(--pink)">0</span></div><div class="progress-mini"><div class="progress-fill" id="bar-exp" style="background:var(--pink);width:0%"></div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">👥 Últimas Movimentações</div></div>
+        <div class="table-wrap"><table><thead><tr><th>Funcionário</th><th>Empresa</th><th>Cargo</th><th>Admissão</th><th>Status</th></tr></thead><tbody id="dash-recent-rows"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- FUNCIONÁRIOS -->
+    <div class="page" id="page-funcionarios">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Todos os Funcionários</div>
+          <div class="filter-tabs">
+            <button class="ftab active" onclick="filterTab(this,'todos')">Todos</button>
+            <button class="ftab movisafe" onclick="filterTab(this,'Movisafe')">Movisafe</button>
+            <button class="ftab smartcicc" onclick="filterTab(this,'Smart CICC')">Smart CICC</button>
+          </div>
+        </div>
+        <div class="table-wrap"><table><thead><tr><th>Funcionário</th><th>Empresa</th><th>Setor</th><th>Admissão</th><th>e-Social</th><th>Status</th><th>Ações</th></tr></thead><tbody id="emp-table-rows"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- FÉRIAS -->
+    <div class="page" id="page-ferias">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-label">Programadas</div><div class="stat-value" id="f-programadas" style="color:var(--accent)">0</div><div class="stat-sub">próx. 30 dias</div></div>
+        <div class="stat-card"><div class="stat-label">Em Gozo</div><div class="stat-value" id="f-gozo" style="color:var(--amber)">0</div><div class="stat-sub">atualmente</div></div>
+        <div class="stat-card"><div class="stat-label">Já Gozadas</div><div class="stat-value" id="f-gozadas" style="color:var(--green)">0</div><div class="stat-sub">este ano</div></div>
+        <div class="stat-card"><div class="stat-label">Atrasadas</div><div class="stat-value" id="f-atrasadas" style="color:var(--red)">0</div><div class="stat-sub">requerem atenção</div></div>
+      </div>
+      <div class="card"><div class="card-header"><div class="card-title">🌴 Controle de Férias</div></div>
+        <div class="table-wrap"><table><thead><tr><th>Funcionário</th><th>Empresa</th><th>Admissão</th><th>Direito</th><th>Gozado</th><th>Saldo</th><th>Próximas Férias</th><th>Situação</th></tr></thead><tbody id="ferias-rows"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- ATESTADOS -->
+    <div class="page" id="page-atestados">
+      <div class="stats-grid" style="grid-template-columns:repeat(3,1fr)">
+        <div class="stat-card"><div class="stat-label">Total de Atestados</div><div class="stat-value" id="at-total" style="color:var(--accent)">0</div></div>
+        <div class="stat-card"><div class="stat-label">Dias de Afastamento</div><div class="stat-value" id="at-dias" style="color:var(--amber)">0</div></div>
+        <div class="stat-card"><div class="stat-label">Este Mês</div><div class="stat-value" id="at-mes" style="color:var(--red)">0</div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">🏥 Atestados Médicos</div><button class="btn btn-ghost" onclick="openAtestadoModal()">+ Lançar Atestado</button></div>
+        <div class="table-wrap"><table><thead><tr><th>Funcionário</th><th>Empresa</th><th>Data</th><th>CID</th><th>Dias</th><th>Médico</th><th>Hospital/Clínica</th><th>Status</th></tr></thead><tbody id="atestados-rows"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- DISCIPLINA -->
+    <div class="page" id="page-disciplina">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-label">Advertências</div><div class="stat-value" id="d-advertencias" style="color:var(--amber)">0</div></div>
+        <div class="stat-card"><div class="stat-label">Suspensões</div><div class="stat-value" id="d-suspensoes" style="color:var(--red)">0</div></div>
+        <div class="stat-card"><div class="stat-label">Avaliações</div><div class="stat-value" id="d-avaliacoes" style="color:var(--accent)">0</div></div>
+        <div class="stat-card"><div class="stat-label">Elogios</div><div class="stat-value" id="d-elogios" style="color:var(--green)">0</div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">⚖️ Registro Disciplinar</div><button class="btn btn-ghost" onclick="openDisciplinaModal()">+ Novo Registro</button></div>
+        <div class="table-wrap"><table><thead><tr><th>Funcionário</th><th>Empresa</th><th>Tipo</th><th>Data</th><th>Motivo</th><th>Responsável</th><th>Nota</th></tr></thead><tbody id="disciplina-rows"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- E-SOCIAL -->
+    <div class="page" id="page-esocial">
+      <div class="card">
+        <div class="card-header"><div class="card-title">📋 Situação e-Social por Funcionário</div></div>
+        <div class="table-wrap"><table><thead><tr><th>Funcionário</th><th>Empresa</th><th>CPF</th><th>Admissão</th><th>Inclusão e-Social</th><th>Situação</th></tr></thead><tbody id="esocial-rows"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- RELATÓRIOS -->
+    <div class="page" id="page-relatorios">
+      <div class="three-col">
+        <div class="card" style="cursor:pointer" onclick="alert('Relatório gerado! (simulação)')"><div style="padding:24px;text-align:center"><div style="font-size:36px;margin-bottom:12px">📄</div><div style="font-family:'Outfit';font-weight:700;font-size:14px;margin-bottom:6px">Quadro de Pessoal</div><div style="font-size:12px;color:var(--text3)">Lista completa por empresa</div></div></div>
+        <div class="card" style="cursor:pointer" onclick="alert('Relatório gerado!')"><div style="padding:24px;text-align:center"><div style="font-size:36px;margin-bottom:12px">🌴</div><div style="font-family:'Outfit';font-weight:700;font-size:14px;margin-bottom:6px">Férias Programadas</div><div style="font-size:12px;color:var(--text3)">Calendário e vencimentos</div></div></div>
+        <div class="card" style="cursor:pointer" onclick="alert('Relatório gerado!')"><div style="padding:24px;text-align:center"><div style="font-size:36px;margin-bottom:12px">🏥</div><div style="font-family:'Outfit';font-weight:700;font-size:14px;margin-bottom:6px">Atestados por Período</div><div style="font-size:12px;color:var(--text3)">Absenteísmo e CID</div></div></div>
+        <div class="card" style="cursor:pointer" onclick="alert('Relatório gerado!')"><div style="padding:24px;text-align:center"><div style="font-size:36px;margin-bottom:12px">⚖️</div><div style="font-family:'Outfit';font-weight:700;font-size:14px;margin-bottom:6px">Histórico Disciplinar</div><div style="font-size:12px;color:var(--text3)">Advertências e avaliações</div></div></div>
+        <div class="card" style="cursor:pointer" onclick="alert('Relatório gerado!')"><div style="padding:24px;text-align:center"><div style="font-size:36px;margin-bottom:12px">📋</div><div style="font-family:'Outfit';font-weight:700;font-size:14px;margin-bottom:6px">Pendências e-Social</div><div style="font-size:12px;color:var(--text3)">Admissões sem inclusão</div></div></div>
+        <div class="card" style="cursor:pointer" onclick="alert('Relatório gerado!')"><div style="padding:24px;text-align:center"><div style="font-size:36px;margin-bottom:12px">🧪</div><div style="font-family:'Outfit';font-weight:700;font-size:14px;margin-bottom:6px">Períodos de Experiência</div><div style="font-size:12px;color:var(--text3)">Ativos e encerrando</div></div></div>
+      </div>
+    </div>
+
+    <!-- ALERTAS -->
+    <div class="page" id="page-alertas">
+      <div class="card"><div class="card-header"><div class="card-title">🔔 Central de Alertas</div></div><div style="padding:16px" id="alertas-content"></div></div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     MODAL FUNCIONÁRIO
+══════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-funcionario">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-func-title">Novo Funcionário</div>
+      <button class="modal-close" onclick="closeModal('modal-funcionario')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab(this,'tab-dados')">📋 Dados Pessoais</button>
+        <button class="tab-btn" onclick="switchTab(this,'tab-contrato')">📄 Contrato</button>
+        <button class="tab-btn" onclick="switchTab(this,'tab-docs')">📁 Documentos</button>
+        <button class="tab-btn" onclick="switchTab(this,'tab-ferias-emp')">🌴 Férias</button>
+        <button class="tab-btn" onclick="switchTab(this,'tab-atestados-emp')">🏥 Atestados</button>
+        <button class="tab-btn" onclick="switchTab(this,'tab-disciplina-emp')">⚖️ Disciplina</button>
+      </div>
+
+      <!-- ABA: DADOS PESSOAIS -->
+      <div class="tab-content active" id="tab-dados">
+        <div class="form-grid">
+          <div class="form-full" style="display:flex;align-items:center;gap:24px;padding-bottom:16px;border-bottom:1px solid var(--border);margin-bottom:4px">
+            <div class="photo-area">
+              <div class="photo-upload" id="photo-upload-area" onclick="document.getElementById('photo-input').click()">
+                <img id="photo-preview" src="" style="display:none">
+                <div id="photo-placeholder" style="font-size:28px;text-align:center">📷</div>
+              </div>
+              <input type="file" id="photo-input" accept="image/*" style="display:none" onchange="previewPhoto(this)">
+              <div class="photo-upload-hint">Clique para<br>foto 3×4</div>
+            </div>
+            <div style="flex:1">
+              <div class="form-group" style="margin-bottom:12px">
+                <label>Empresa *</label>
+                <select id="f-empresa"><option value="Movisafe">Movisafe</option><option value="Smart CICC">Smart CICC</option></select>
+              </div>
+              <div class="form-group">
+                <label>Status *</label>
+                <select id="f-status"><option value="Ativo">Ativo</option><option value="Experiência">Experiência (30 dias)</option><option value="Em Férias">Em Férias</option><option value="Afastado">Afastado</option><option value="Desligado">Desligado</option></select>
+              </div>
+            </div>
+          </div>
+          <div class="section-title">Identificação</div>
+          <div class="form-group"><label>Nome Completo *</label><input type="text" id="f-nome" placeholder="Nome completo"></div>
+          <div class="form-group"><label>CPF *</label><input type="text" id="f-cpf" placeholder="000.000.000-00"></div>
+          <div class="form-group"><label>RG</label><input type="text" id="f-rg" placeholder="Número do RG"></div>
+          <div class="form-group"><label>Data de Nascimento</label><input type="date" id="f-nascimento"></div>
+          <div class="form-group"><label>Sexo</label><select id="f-sexo"><option value="">Selecione</option><option>Masculino</option><option>Feminino</option><option>Outro</option></select></div>
+          <div class="form-group"><label>Estado Civil</label><select id="f-civil"><option value="">Selecione</option><option>Solteiro(a)</option><option>Casado(a)</option><option>Divorciado(a)</option><option>Viúvo(a)</option><option>União Estável</option></select></div>
+          <div class="form-group"><label>Naturalidade</label><input type="text" id="f-naturalidade" placeholder="Cidade/UF"></div>
+          <div class="form-group"><label>Nacionalidade</label><input type="text" id="f-nacionalidade" value="Brasileira"></div>
+          <div class="section-title">Contato</div>
+          <div class="form-group"><label>Telefone / WhatsApp</label><input type="text" id="f-telefone" placeholder="(21) 99999-9999"></div>
+          <div class="form-group"><label>E-mail</label><input type="email" id="f-email" placeholder="email@exemplo.com"></div>
+          <div class="form-group form-full"><label>Endereço Completo</label><input type="text" id="f-endereco" placeholder="Rua, número, bairro, cidade, CEP"></div>
+          <div class="section-title">Documentos</div>
+          <div class="form-group"><label>PIS/PASEP</label><input type="text" id="f-pis" placeholder="PIS/PASEP"></div>
+          <div class="form-group"><label>CTPS</label><input type="text" id="f-ctps" placeholder="Série/Número"></div>
+          <div class="form-group"><label>CNH</label><input type="text" id="f-cnh" placeholder="Número e categoria"></div>
+          <div class="form-group"><label>Título de Eleitor</label><input type="text" id="f-titulo" placeholder="Número do título"></div>
+          <div class="form-group"><label>Escolaridade</label><select id="f-escolaridade"><option value="">Selecione</option><option>Fundamental Incompleto</option><option>Fundamental Completo</option><option>Médio Incompleto</option><option>Médio Completo</option><option>Superior Incompleto</option><option>Superior Completo</option><option>Pós-Graduação</option></select></div>
+          <div class="form-group"><label>Nome da Mãe</label><input type="text" id="f-mae" placeholder="Nome completo da mãe"></div>
+        </div>
+      </div>
+
+      <!-- ABA: CONTRATO -->
+      <div class="tab-content" id="tab-contrato">
+        <div class="form-grid">
+          <div class="section-title">Dados Contratuais</div>
+          <div class="form-group"><label>Cargo / Função *</label><input type="text" id="f-cargo" placeholder="Ex: Analista de Segurança"></div>
+          <div class="form-group"><label>Departamento / Setor</label><input type="text" id="f-setor" placeholder="Ex: Operações"></div>
+          <div class="form-group"><label>Data de Admissão *</label><input type="date" id="f-admissao"></div>
+          <div class="form-group"><label>Tipo de Contrato</label><select id="f-tipo-contrato"><option>CLT</option><option>PJ</option><option>Temporário</option><option>Estágio</option><option>Jovem Aprendiz</option></select></div>
+          <div class="form-group"><label>Salário Base (R$)</label><input type="number" id="f-salario" placeholder="0,00"></div>
+          <div class="form-group"><label>Jornada de Trabalho</label><select id="f-jornada"><option>44h semanais</option><option>40h semanais</option><option>36h semanais</option><option>12x36</option><option>Outra</option></select></div>
+          <div class="form-group"><label>Turno</label><select id="f-turno"><option>Diurno</option><option>Noturno</option><option>Misto</option><option>Escala</option></select></div>
+          <div class="form-group"><label>Local de Trabalho</label><input type="text" id="f-local" placeholder="Unidade / Base"></div>
+          <div class="section-title">e-Social</div>
+          <div class="form-group"><label>Data de Inclusão no e-Social</label><input type="date" id="f-esocial"></div>
+          <div class="form-group"><label>Status e-Social</label><select id="f-esocial-status"><option value="Incluído">✅ Incluído</option><option value="Pendente">⏳ Pendente</option><option value="Erro">❌ Erro</option></select></div>
+          <div class="section-title">Período de Experiência</div>
+          <div class="form-group"><label>Em Período de Experiência?</label><select id="f-experiencia"><option value="Não">Não</option><option value="Sim">Sim (30 dias)</option></select></div>
+          <div class="form-group"><label>Término da Experiência</label><input type="date" id="f-fim-experiencia"></div>
+          <div class="section-title">Dados Bancários</div>
+          <div class="form-group"><label>Banco</label><input type="text" id="f-banco" placeholder="Nome do banco"></div>
+          <div class="form-group"><label>Agência / Conta</label><input type="text" id="f-conta" placeholder="Agência - Conta"></div>
+          <div class="form-group"><label>Tipo de Conta</label><select id="f-tipo-conta"><option>Corrente</option><option>Poupança</option><option>PIX (CPF)</option></select></div>
+          <div class="form-group"><label>Chave PIX</label><input type="text" id="f-pix" placeholder="CPF, e-mail ou telefone"></div>
+          <div class="section-title">Contrato de Trabalho (PDF)</div>
+          <div class="form-full">
+            <div class="pdf-drop-zone" id="pdf-drop-zone" onclick="document.getElementById('pdf-input').click()"
+              ondragover="event.preventDefault();this.classList.add('drag-over')"
+              ondragleave="this.classList.remove('drag-over')"
+              ondrop="handlePdfDrop(event)">
+              <input type="file" id="pdf-input" accept="application/pdf" style="display:none" onchange="handlePdfFile(this.files[0])">
+              <div id="pdf-placeholder" style="text-align:center">
+                <div style="font-size:36px;margin-bottom:8px">📄</div>
+                <div style="font-size:13px;font-weight:600;color:var(--text2)">Anexar contrato em PDF</div>
+                <div style="font-size:11px;color:var(--text3);margin-top:4px">Clique ou arraste o arquivo aqui</div>
+              </div>
+              <div id="pdf-attached" style="display:none;width:100%">
+                <div style="display:flex;align-items:center;gap:12px">
+                  <div style="font-size:32px">📋</div>
+                  <div style="flex:1"><div id="pdf-name" style="font-size:13px;font-weight:600;color:var(--text)"></div><div id="pdf-size" style="font-size:11px;color:var(--text3);margin-top:2px"></div></div>
+                  <button onclick="removePdf(event)" style="background:var(--surface3);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;color:var(--text2)">✕ Remover</button>
+                  <button onclick="viewPdf(event)" style="background:var(--accent);border:none;border-radius:6px;padding:4px 12px;font-size:11px;cursor:pointer;color:#fff">↗ Abrir</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group form-full"><label>Observações Gerais</label><textarea id="f-obs" placeholder="Anotações, histórico, informações relevantes..."></textarea></div>
+        </div>
+      </div>
+
+      <!-- ABA: DOCUMENTOS -->
+      <div class="tab-content" id="tab-docs">
+        <div class="doc-legend">
+          <div class="doc-legend-item"><div class="doc-dot dot-red"></div> Imprescindível para admissão</div>
+          <div class="doc-legend-item"><div class="doc-dot dot-blue"></div> Necessário (não imprescindível)</div>
+          <div class="doc-legend-item"><div class="doc-dot dot-green-doc"></div> Opcional / a critério da empresa</div>
+        </div>
+        <div class="doc-progress-label"><span>Documentos entregues</span><span id="doc-progress-text">0 / 16</span></div>
+        <div class="doc-progress-bar"><div class="doc-progress-fill" id="doc-progress-fill" style="width:0%"></div></div>
+
+        <div class="doc-section-header"><div class="doc-dot dot-red"></div><span style="color:#dc2626">Imprescindíveis para Admissão</span></div>
+        <div class="doc-item" id="doc-rg"><div class="doc-dot dot-red"></div><div class="doc-name bold">Cópia da Carteira de Identidade (RG)</div><span class="doc-badge badge-imp" id="badge-rg">Pendente</span><input type="file" id="file-rg" accept="image/*,application/pdf" style="display:none" onchange="docUploaded('rg',this)"><button class="doc-upload-btn" id="btn-rg" onclick="document.getElementById('file-rg').click()">📎 Anexar</button></div>
+        <div class="doc-item" id="doc-ctps"><div class="doc-dot dot-red"></div><div class="doc-name bold">Cópia da CTPS <span style="font-weight:400;font-size:11px">(ou CPF se não possuir)</span></div><span class="doc-badge badge-imp" id="badge-ctps">Pendente</span><input type="file" id="file-ctps" accept="image/*,application/pdf" style="display:none" onchange="docUploaded('ctps',this)"><button class="doc-upload-btn" id="btn-ctps" onclick="document.getElementById('file-ctps').click()">📎 Anexar</button></div>
+        <div class="doc-item" id="doc-cpf"><div class="doc-dot dot-red"></div><div class="doc-name bold">Cópia do CPF</div><span class="doc-badge badge-imp" id="badge-cpf">Pendente</span><input type="file" id="file-cpf" accept="image/*,application/pdf" style="display:none" onchange="docUploaded('cpf',this)"><button class="doc-upload-btn" id="btn-cpf" onclick="document.getElementById('file-cpf').click()">📎 Anexar</button></div>
+        <div class="doc-item" id="doc-pis"><div class="doc-dot dot-red"></div><div class="doc-name bold">Cópia do Cartão PIS/PASEP</div><span class="doc-badge badge-imp" id="badge-pis">Pendente</span><input type="file" id="file-pis" accept="image/*,application/pdf" style="display:none" onchange="docUploaded('pis',this)"><button class="doc-upload-btn" id="btn-pis" onclick="document.getElementById('file-pis').click()">📎 Anexar</button></div>
+        <div class="doc-item" id="doc-reservista"><div class="doc-dot dot-red"></div><div class="doc-name bold">Certificado de Reservista <span style="font-weight:400;font-size:11px">(homens com menos de 45 anos)</span></div><span class="doc-badge badge-imp" id="badge-reservista">Pendente</span><input type="file" id="file-reservista" accept="image/*,application/pdf" style="display:none" onchange="docUploaded('reservista',this)"><button class="doc-upload-btn" id="btn-reservista" onclick="document.getElementById('file-reservista').click()">📎 Anexar</button></div>
+        <div class="doc-item" id="doc-residencia"><div class="doc-dot dot-red"></div><div class="doc-name bold">Comprovante de Residência</div><span class="doc-badge badge-imp" id="badge-residencia">Pendente</span><input type="file" id="file-residencia" accept="image/*,application/pdf" style="display:none" onchange="docUploaded('residencia',this)"><button class="doc-upload-btn" id="btn-residencia" onclick="document.getElementById('file-residencia').click()">📎 Anexar</button></div>
+        <div class="doc-item" id="doc-docs-profissionais"><div class="doc-dot dot-red"></div><div class="doc-name bold">Documentos Profissionais relativos ao Cargo</div><span class="doc-badge badge-imp" id="badge-docs-profissionais">Pendente</span><input type="file" id="file-docs-profissionais" accept="image/*,application/pdf" style="display:none" onchange="docUploaded('docs-profissionais',this)"><button class="doc-upload-btn" id="btn-docs-profissionais" onclick="document.getElementById('file-docs-profissionais').click()">📎 Anexar</button></div>
+        <div class="doc-item" id="doc-atestado-adm"><div class="doc-dot dot-blue"></div><div class="doc-name normal">Atestado Médico Admissional</div><span class="doc-badge badge-nec" id="badge-atestado-adm">Pendente</span><input type="file" id="file-atestado-adm" accept="image/*,application/pdf" style="display:none" onchange="docUploaded('atestado-adm',this)"><button class="doc-upload-btn" id="btn-atestado-adm" onclick="document.getElementById('file-atestado-adm').click()">📎 Anexar</button></div>
+
+        <div class="doc-section-header" style="margin-top:20px"><div class="doc-dot dot-blue"></div><span style="color:#2563eb">Necessários (não imprescindíveis inicialmente)</span></div>
+        <div class="doc-item" id="doc-foto"><div class="doc-dot dot-blue"></div><div class="doc-name normal">Foto 3×4</div><span class="doc-badge badge-nec" id="badge-foto">Pendente</span><input type="file" id="file-foto" accept="image/*" style="display:none" onchange="docUploaded('foto',this)"><button class="doc-upload-btn" id="btn-foto" onclick="document.getElementById('file-foto').click()">📎 Anexar</button></div>
+        <div class="doc-item" id="doc-titulo-doc"><div class="doc-dot dot-blue"></div><div class="doc-name normal">Título de Eleitor</div><span class="doc-badge badge-nec" id="badge-titulo-doc">Pendente</span><input type="file" id="file-titulo-doc" accept="image/*,application/pdf" style="display:none" onchange="docUploaded('titulo-doc',this)"><button class="doc-upload-btn" id="btn-titulo-doc" onclick="document.getElementById('file-titulo-doc').click()">📎 Anexar</button></div>
+        <div class="doc-item" id="doc-escolaridade-doc"><div class="doc-dot dot-blue"></div><div class="doc-name normal">Comprovante de Escolaridade</div><span class="doc-badge badge-nec" id="badge-escolaridade-doc">Pendente</span><input type="file" id="file-escolaridade-doc" accept="image/*,application/pdf" style="display:none" onchange="docUploaded('escolaridade-doc',this)"><button class="doc-upload-btn" id="btn-escolaridade-doc" onclick="document.getElementById('file-escolaridade-doc').click()">📎 Anexar</button></div>
+        <div class="doc-item" id="doc-cnh-doc"><div class="doc-dot dot-blue"></div><div class="doc-name normal">CNH <span style="font-size:11px">(cargo que exija veículo)</span></div><span class="doc-badge badge-nec" id="badge-cnh-doc">Pendente</span><input type="file" id="file-cnh-doc" accept="image/*,application/pdf" style="display:none" onchange="docUploaded('cnh-doc',this)"><button class="doc-upload-btn" id="btn-cnh-doc" onclick="document.getElementById('file-cnh-doc').click()">📎 Anexar</button></div>
+
+        <div class="doc-section-header" style="margin-top:20px"><div class="doc-dot dot-green-doc"></div><span style="color:#059669">Opcionais / a critério da empresa</span></div>
+        <div class="doc-item" id="doc-casamento"><div class="doc-dot dot-green-doc"></div><div class="doc-name soft">Certidão de Casamento <span style="font-size:11px">(se aplicável)</span></div><span class="doc-badge badge-opc" id="badge-casamento">N/A</span><input type="file" id="file-casamento" accept="image/*,application/pdf" style="display:none" onchange="docUploaded('casamento',this)"><button class="doc-upload-btn" id="btn-casamento" onclick="document.getElementById('file-casamento').click()">📎 Anexar</button></div>
+        <div class="doc-item" id="doc-nasc-filhos"><div class="doc-dot dot-green-doc"></div><div class="doc-name soft">Certidão de Nascimento dos Filhos (até 21 anos)</div><span class="doc-badge badge-opc" id="badge-nasc-filhos">N/A</span><input type="file" id="file-nasc-filhos" accept="image/*,application/pdf" style="display:none" onchange="docUploaded('nasc-filhos',this)"><button class="doc-upload-btn" id="btn-nasc-filhos" onclick="document.getElementById('file-nasc-filhos').click()">📎 Anexar</button></div>
+        <div class="doc-item" id="doc-vacina"><div class="doc-dot dot-green-doc"></div><div class="doc-name soft">Carteira de Vacinação dos Filhos (menores de 7 anos)</div><span class="doc-badge badge-opc" id="badge-vacina">N/A</span><input type="file" id="file-vacina" accept="image/*,application/pdf" style="display:none" onchange="docUploaded('vacina',this)"><button class="doc-upload-btn" id="btn-vacina" onclick="document.getElementById('file-vacina').click()">📎 Anexar</button></div>
+        <div class="doc-item" id="doc-freq-escolar"><div class="doc-dot dot-green-doc"></div><div class="doc-name soft">Comprovante de Frequência Escolar dos Filhos (maiores de 7 anos)</div><span class="doc-badge badge-opc" id="badge-freq-escolar">N/A</span><input type="file" id="file-freq-escolar" accept="image/*,application/pdf" style="display:none" onchange="docUploaded('freq-escolar',this)"><button class="doc-upload-btn" id="btn-freq-escolar" onclick="document.getElementById('file-freq-escolar').click()">📎 Anexar</button></div>
+      </div>
+
+      <!-- ABA: FÉRIAS -->
+      <div class="tab-content" id="tab-ferias-emp">
+        <div class="form-grid">
+          <div class="section-title">Programação de Férias</div>
+          <div class="form-group"><label>Início das Próximas Férias</label><input type="date" id="f-ferias-inicio"></div>
+          <div class="form-group"><label>Fim das Próximas Férias</label><input type="date" id="f-ferias-fim"></div>
+          <div class="form-group"><label>Dias de Férias Gozados</label><input type="number" id="f-ferias-gozadas" value="0" min="0" max="30"></div>
+          <div class="form-group"><label>Status das Férias</label><select id="f-ferias-status"><option value="Não iniciado">Não iniciado</option><option value="Programado">Programado</option><option value="Em gozo">Em gozo</option><option value="Concluído">Concluído</option><option value="Atrasado">Atrasado / Vencido</option></select></div>
+          <div class="form-group form-full"><label>Observações sobre Férias</label><textarea id="f-ferias-obs" placeholder="Parcelamento, etc..."></textarea></div>
+        </div>
+      </div>
+
+      <!-- ABA: ATESTADOS -->
+      <div class="tab-content" id="tab-atestados-emp">
+        <div style="color:var(--text3);font-size:13px;margin-bottom:16px">Gerencie atestados na seção Atestados. Aqui está o resumo do funcionário.</div>
+        <div id="emp-atestados-list"><div class="empty-state"><div class="empty-icon">🏥</div><div style="font-size:14px">Nenhum atestado lançado ainda.</div></div></div>
+      </div>
+
+      <!-- ABA: DISCIPLINA -->
+      <div class="tab-content" id="tab-disciplina-emp">
+        <div style="color:var(--text3);font-size:13px;margin-bottom:16px">Gerencie disciplina na seção Disciplina. Aqui está o resumo do funcionário.</div>
+        <div id="emp-disciplina-list"><div class="empty-state"><div class="empty-icon">⚖️</div><div style="font-size:14px">Nenhum registro disciplinar ainda.</div></div></div>
+      </div>
+
+    </div>
+    <div style="padding:0 24px 24px;display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn btn-ghost" onclick="closeModal('modal-funcionario')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveEmployee()">💾 Salvar Funcionário</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ATESTADO -->
+<div class="modal-overlay" id="modal-atestado">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-header"><div class="modal-title">🏥 Lançar Atestado Médico</div><button class="modal-close" onclick="closeModal('modal-atestado')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>Funcionário *</label><select id="at-funcionario"></select></div>
+        <div class="form-group"><label>Data do Atestado *</label><input type="date" id="at-data"></div>
+        <div class="form-group"><label>CID</label><input type="text" id="at-cid" placeholder="Ex: Z00.0"></div>
+        <div class="form-group"><label>Dias de Afastamento *</label><input type="number" id="at-dias-input" min="1" value="1"></div>
+        <div class="form-group"><label>Médico Responsável</label><input type="text" id="at-medico" placeholder="Dr. Nome"></div>
+        <div class="form-group"><label>Hospital / Clínica</label><input type="text" id="at-hospital" placeholder="Nome da unidade"></div>
+        <div class="form-group form-full"><label>Observações</label><textarea id="at-obs" placeholder="Informações adicionais..."></textarea></div>
+      </div>
+    </div>
+    <div style="padding:0 24px 24px;display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn btn-ghost" onclick="closeModal('modal-atestado')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveAtestado()">💾 Salvar Atestado</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DISCIPLINA -->
+<div class="modal-overlay" id="modal-disciplina">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-header"><div class="modal-title">⚖️ Novo Registro Disciplinar</div><button class="modal-close" onclick="closeModal('modal-disciplina')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>Funcionário *</label><select id="disc-funcionario"></select></div>
+        <div class="form-group"><label>Tipo *</label><select id="disc-tipo"><option>Advertência Verbal</option><option>Advertência Escrita</option><option>Suspensão</option><option>Elogio</option><option>Avaliação de Desempenho</option></select></div>
+        <div class="form-group"><label>Data *</label><input type="date" id="disc-data"></div>
+        <div class="form-group"><label>Nota (1–5)</label><select id="disc-nota"><option value="">N/A</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+        <div class="form-group"><label>Responsável</label><input type="text" id="disc-responsavel" placeholder="Nome do responsável"></div>
+        <div class="form-group form-full"><label>Motivo / Descrição *</label><textarea id="disc-motivo" placeholder="Descreva o ocorrido..."></textarea></div>
+      </div>
+    </div>
+    <div style="padding:0 24px 24px;display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn btn-ghost" onclick="closeModal('modal-disciplina')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveDisciplina()">💾 Salvar Registro</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONFIGURAÇÕES -->
+<div class="modal-overlay" id="modal-settings">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-header"><div class="modal-title">⚙️ Configurações</div><button class="modal-close" onclick="closeModal('modal-settings')">✕</button></div>
+    <div class="modal-body">
+      <div class="settings-row">
+        <div><div class="settings-label">🌙 Tema Escuro</div><div class="settings-sub">Alterna entre modo claro e escuro</div></div>
+        <div style="display:flex;align-items:center;gap:8px"><span style="font-size:12px;color:var(--text3)" id="theme-label">Claro</span><button class="toggle" id="dark-toggle" onclick="toggleDark()"></button></div>
+      </div>
+      <div class="settings-row"><div><div class="settings-label">🔔 Alertas Automáticos</div><div class="settings-sub">Exibir painel de alertas no dashboard</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+      <div class="settings-row"><div><div class="settings-label">📅 Avisar Experiência</div><div class="settings-sub">Notificar quando faltam 7 dias para fim do período</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+      <div class="settings-row"><div><div class="settings-label">🌴 Alertar Férias Vencidas</div><div class="settings-sub">Destacar funcionários com férias em atraso</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+      <div class="settings-row"><div><div class="settings-label">📋 Pendências e-Social</div><div class="settings-sub">Alertar inclusões pendentes no e-Social</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+      <div class="settings-row"><div class="settings-label" style="color:var(--text3);font-size:12px">Versão do Sistema</div><span style="font-size:12px;color:var(--text3)">Central RH Movisafe v2.1</span></div>
+    </div>
+    <div style="padding:0 24px 24px;display:flex;justify-content:flex-end"><button class="btn btn-primary" onclick="closeModal('modal-settings')">Fechar</button></div>
+  </div>
+</div>
+
+<!-- DOC PREVIEW OVERLAY -->
+<div id="doc-preview-overlay" onclick="if(event.target===this)this.style.display='none'"
+  style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.88);align-items:center;justify-content:center;flex-direction:column;gap:12px">
+  <div style="display:flex;align-items:center;gap:12px;padding:0 20px;width:100%;max-width:860px">
+    <div id="doc-preview-title" style="color:#fff;font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;flex:1"></div>
+    <button onclick="document.getElementById('doc-preview-overlay').style.display='none'"
+      style="background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:8px;padding:6px 14px;cursor:pointer;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif">✕ Fechar</button>
+  </div>
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;width:100%;max-width:860px;max-height:calc(100vh - 80px);overflow:auto;padding:0 20px">
+    <img id="doc-preview-img" src="" style="max-width:100%;max-height:100%;object-fit:contain;border-radius:8px;box-shadow:0 8px 40px rgba(0,0,0,.6)">
+  </div>
+</div>
+<div id="doc-hover" class="doc-hover"><img id="doc-hover-img" src="" alt=""></div>
+
+<script>
+// ── DATA ─────────────────────────────────────────────────────────────────────
+const STORAGE_KEY = 'rh-dashboard-data-v1';
+const DEFAULT_DATA = {
+  employees: [
+  // MOVISAFE
+  {id:1,nome:'Ana Beatriz Souza',cargo:'Supervisora de Segurança',setor:'Operações',empresa:'Movisafe',cpf:'111.222.333-44',rg:'1100223',nascimento:'1987-03-12',sexo:'Feminino',civil:'Casado(a)',telefone:'(21) 90000-0001',email:'ana.souza@example.com',endereco:'Rua Exemplo, 120, Tijuca, RJ',pis:'11122233344',ctps:'1100/2233',cnh:'B',titulo:'',escolaridade:'Superior Completo',mae:'Marina Souza',naturalidade:'Rio de Janeiro/RJ',nacionalidade:'Brasileira',admissao:'2023-02-10',esocial:'2023-02-08',esocial_status:'Incluído',tipo_contrato:'CLT',salario:3900,jornada:'44h semanais',turno:'Diurno',local:'Sede Rio',experiencia:'Não',fim_experiencia:'',status:'Ativo',ferias_inicio:'2024-07-01',ferias_fim:'2024-07-30',ferias_gozadas:30,ferias_status:'Concluído',foto:'',obs:'',banco:'Banco Exemplo',conta:'',tipo_conta:'PIX (CPF)',pix:'111.222.333-44'},
+  {id:2,nome:'Lucas Pereira',cargo:'Agente de Segurança',setor:'Operações',empresa:'Movisafe',cpf:'222.333.444-55',rg:'2200334',nascimento:'1999-11-05',sexo:'Masculino',civil:'Solteiro(a)',telefone:'(21) 90000-0002',email:'lucas.pereira@example.com',endereco:'Rua Modelo, 77, Méier, RJ',pis:'22233344455',ctps:'2200/3344',cnh:'',titulo:'',escolaridade:'Médio Completo',mae:'Sandra Pereira',naturalidade:'Rio de Janeiro/RJ',nacionalidade:'Brasileira',admissao:'2026-02-18',esocial:'',esocial_status:'Pendente',tipo_contrato:'CLT',salario:2300,jornada:'44h semanais',turno:'Noturno',local:'Unidade Méier',experiencia:'Sim',fim_experiencia:'2026-04-05',status:'Experiência',ferias_inicio:'',ferias_fim:'',ferias_gozadas:0,ferias_status:'Não iniciado',foto:'',obs:'Funcionário fictício para testes',banco:'Banco Exemplo',conta:'',tipo_conta:'Poupança',pix:''},
+  {id:3,nome:'João Victor Almeida',cargo:'Auxiliar Administrativo',setor:'RH',empresa:'Movisafe',cpf:'333.444.555-66',rg:'3300445',nascimento:'1996-09-12',sexo:'Masculino',civil:'Solteiro(a)',telefone:'(21) 90000-0003',email:'joao.almeida@example.com',endereco:'Rua Simulada, 210, Flamengo, RJ',pis:'33344455566',ctps:'3300/4455',cnh:'B',titulo:'',escolaridade:'Superior Completo',mae:'Adriana Almeida',naturalidade:'Rio de Janeiro/RJ',nacionalidade:'Brasileira',admissao:'2025-11-04',esocial:'2025-11-03',esocial_status:'Incluído',tipo_contrato:'CLT',salario:2900,jornada:'44h semanais',turno:'Diurno',local:'Sede Rio',experiencia:'Não',fim_experiencia:'',status:'Ativo',ferias_inicio:'2026-08-05',ferias_fim:'2026-09-03',ferias_gozadas:0,ferias_status:'Programado',foto:'',obs:'',banco:'Banco Exemplo',conta:'',tipo_conta:'Corrente',pix:'333.444.555-66'},
+  {id:4,nome:'Bruno Carvalho',cargo:'Coordenador de Operações',setor:'Operações',empresa:'Movisafe',cpf:'444.555.666-77',rg:'4400556',nascimento:'1981-07-22',sexo:'Masculino',civil:'Casado(a)',telefone:'(21) 90000-0004',email:'bruno.carvalho@example.com',endereco:'Av. Exemplo, 500, Centro, RJ',pis:'44455566677',ctps:'4400/5566',cnh:'AB',titulo:'',escolaridade:'Pós-Graduação',mae:'Claudia Carvalho',naturalidade:'Belo Horizonte/MG',nacionalidade:'Brasileira',admissao:'2021-03-05',esocial:'2021-03-03',esocial_status:'Incluído',tipo_contrato:'CLT',salario:6600,jornada:'44h semanais',turno:'Diurno',local:'Sede Rio',experiencia:'Não',fim_experiencia:'',status:'Ativo',ferias_inicio:'',ferias_fim:'',ferias_gozadas:0,ferias_status:'Atrasado',foto:'',obs:'Coordena equipes de campo (fictício).',banco:'Banco Exemplo',conta:'12345-6',tipo_conta:'Corrente',pix:'444.555.666-77'},
+  {id:5,nome:'Marcos Nunes',cargo:'Técnico de Alarme',setor:'Técnico',empresa:'Movisafe',cpf:'555.666.777-88',rg:'5500667',nascimento:'1994-02-14',sexo:'Masculino',civil:'União Estável',telefone:'(21) 90000-0005',email:'marcos.nunes@example.com',endereco:'Rua Mock, 78, Saúde, RJ',pis:'55566677788',ctps:'5500/6677',cnh:'B',titulo:'',escolaridade:'Médio Completo',mae:'Rosangela Nunes',naturalidade:'Niterói/RJ',nacionalidade:'Brasileira',admissao:'2024-06-10',esocial:'2024-06-09',esocial_status:'Incluído',tipo_contrato:'CLT',salario:3300,jornada:'44h semanais',turno:'Misto',local:'Campo - Sul',experiencia:'Não',fim_experiencia:'',status:'Afastado',ferias_inicio:'',ferias_fim:'',ferias_gozadas:0,ferias_status:'Não iniciado',foto:'',obs:'Afastamento médico (fictício).',banco:'Banco Exemplo',conta:'',tipo_conta:'Corrente',pix:''},
+  // SMART CICC
+  {id:6,nome:'Fernanda Ribeiro',cargo:'Analista de CFTV',setor:'Monitoramento',empresa:'Smart CICC',cpf:'666.777.888-99',rg:'6600778',nascimento:'1992-08-22',sexo:'Feminino',civil:'Solteiro(a)',telefone:'(21) 90000-0006',email:'fernanda.ribeiro@example.com',endereco:'Av. Exemplo, 800, Copacabana, RJ',pis:'66677788899',ctps:'6600/7788',cnh:'B',titulo:'',escolaridade:'Superior Completo',mae:'Ana Ribeiro',naturalidade:'Niterói/RJ',nacionalidade:'Brasileira',admissao:'2024-02-15',esocial:'2024-02-13',esocial_status:'Incluído',tipo_contrato:'CLT',salario:4300,jornada:'44h semanais',turno:'Escala',local:'CICC Central',experiencia:'Não',fim_experiencia:'',status:'Ativo',ferias_inicio:'2025-02-15',ferias_fim:'',ferias_gozadas:0,ferias_status:'Atrasado',foto:'',obs:'',banco:'Banco Exemplo',conta:'',tipo_conta:'Corrente',pix:''},
+  {id:7,nome:'Patricia Gomes',cargo:'Operadora de CFTV',setor:'Monitoramento',empresa:'Smart CICC',cpf:'777.888.999-00',rg:'7700889',nascimento:'1990-05-18',sexo:'Feminino',civil:'Casado(a)',telefone:'(21) 90000-0007',email:'patricia.gomes@example.com',endereco:'Rua Simulada, 33, Glória, RJ',pis:'77788899900',ctps:'7700/8899',cnh:'B',titulo:'',escolaridade:'Superior Incompleto',mae:'Helena Gomes',naturalidade:'Duque de Caxias/RJ',nacionalidade:'Brasileira',admissao:'2022-06-01',esocial:'2022-05-30',esocial_status:'Incluído',tipo_contrato:'CLT',salario:3200,jornada:'12x36',turno:'Escala',local:'CICC Norte',experiencia:'Não',fim_experiencia:'',status:'Em Férias',ferias_inicio:'2026-03-10',ferias_fim:'2026-04-08',ferias_gozadas:0,ferias_status:'Em gozo',foto:'',obs:'',banco:'Banco Exemplo',conta:'',tipo_conta:'Corrente',pix:''},
+  {id:8,nome:'Mariana Torres',cargo:'Analista de Inteligência',setor:'Inteligência',empresa:'Smart CICC',cpf:'888.999.000-11',rg:'8800990',nascimento:'1989-12-03',sexo:'Feminino',civil:'Divorciado(a)',telefone:'(21) 90000-0008',email:'mariana.torres@example.com',endereco:'Rua Mock, 241, Catete, RJ',pis:'88899900011',ctps:'8800/9900',cnh:'',titulo:'',escolaridade:'Pós-Graduação',mae:'Vera Torres',naturalidade:'São Paulo/SP',nacionalidade:'Brasileira',admissao:'2020-08-17',esocial:'2020-08-15',esocial_status:'Incluído',tipo_contrato:'CLT',salario:7900,jornada:'40h semanais',turno:'Diurno',local:'CICC Central',experiencia:'Não',fim_experiencia:'',status:'Ativo',ferias_inicio:'2026-07-14',ferias_fim:'2026-08-12',ferias_gozadas:0,ferias_status:'Programado',foto:'',obs:'Especialista fictícia em análise de risco.',banco:'Banco Exemplo',conta:'',tipo_conta:'PIX (CPF)',pix:'888.999.000-11'},
+  {id:9,nome:'Bruno Cardoso',cargo:'Técnico em TI',setor:'TI',empresa:'Smart CICC',cpf:'999.000.111-22',rg:'9900111',nascimento:'1996-04-29',sexo:'Masculino',civil:'Solteiro(a)',telefone:'(21) 90000-0009',email:'bruno.cardoso@example.com',endereco:'Av. Exemplo, 150, Maracanã, RJ',pis:'99900011122',ctps:'9900/0111',cnh:'B',titulo:'',escolaridade:'Superior Completo',mae:'Fatima Cardoso',naturalidade:'Rio de Janeiro/RJ',nacionalidade:'Brasileira',admissao:'2026-03-03',esocial:'',esocial_status:'Pendente',tipo_contrato:'CLT',salario:4600,jornada:'40h semanais',turno:'Diurno',local:'CICC Central',experiencia:'Sim',fim_experiencia:'2026-04-03',status:'Experiência',ferias_inicio:'',ferias_fim:'',ferias_gozadas:0,ferias_status:'Não iniciado',foto:'',obs:'Suporte de rede (fictício).',banco:'Banco Exemplo',conta:'',tipo_conta:'PIX (CPF)',pix:'999.000.111-22'},
+  {id:10,nome:'Aline Pereira',cargo:'Supervisora de CFTV',setor:'Monitoramento',empresa:'Smart CICC',cpf:'000.111.222-33',rg:'0001112',nascimento:'1986-09-11',sexo:'Feminino',civil:'Casado(a)',telefone:'(21) 90000-0010',email:'aline.pereira@example.com',endereco:'Rua Modelo, 88, Botafogo, RJ',pis:'00011122233',ctps:'0001/1122',cnh:'B',titulo:'',escolaridade:'Superior Completo',mae:'Izabel Pereira',naturalidade:'Rio de Janeiro/RJ',nacionalidade:'Brasileira',admissao:'2019-05-20',esocial:'2019-05-18',esocial_status:'Incluído',tipo_contrato:'CLT',salario:5500,jornada:'12x36',turno:'Escala',local:'CICC Norte',experiencia:'Não',fim_experiencia:'',status:'Ativo',ferias_inicio:'',ferias_fim:'',ferias_gozadas:0,ferias_status:'Atrasado',foto:'',obs:'Turno noturno (fictício).',banco:'Banco Exemplo',conta:'',tipo_conta:'Corrente',pix:''},
+  ],
+  atestados: [
+  {id:1,emp_id:1,data:'2026-01-15',cid:'J06.0',dias:3,medico:'Dr. Exemplo',hospital:'UPA Modelo',obs:'Gripe com febre (fictício)',status:'Validado'},
+  {id:2,emp_id:6,data:'2026-02-10',cid:'M54.5',dias:5,medico:'Dra. Exemplo',hospital:'Clínica Modelo',obs:'Lombalgia aguda (fictício)',status:'Validado'},
+  {id:3,emp_id:7,data:'2026-03-05',cid:'F32.0',dias:15,medico:'Dr. Exemplo',hospital:'CAPS Exemplo',obs:'Acompanhamento médico (fictício)',status:'Em análise'},
+  {id:4,emp_id:5,data:'2026-02-28',cid:'S62.3',dias:30,medico:'Dr. Exemplo',hospital:'Hospital Modelo',obs:'Afastamento prolongado (fictício)',status:'Validado'},
+  {id:5,emp_id:8,data:'2026-01-22',cid:'J02.9',dias:2,medico:'Dra. Exemplo',hospital:'UPA Exemplo',obs:'Faringite aguda (fictício)',status:'Validado'},
+  ],
+  disciplinas: [
+  {id:1,emp_id:1,tipo:'Avaliação de Desempenho',data:'2025-12-20',motivo:'Entrega acima do esperado no 2º semestre (fictício)',responsavel:'Diretoria Operacional',nota:'5'},
+  {id:2,emp_id:6,tipo:'Advertência Verbal',data:'2026-01-08',motivo:'Atraso sem justificativa em escala noturna (fictício)',responsavel:'Coord. Monitoramento',nota:''},
+  {id:3,emp_id:7,tipo:'Elogio',data:'2026-02-14',motivo:'Boa resposta em ocorrência simulada (fictício)',responsavel:'Gerência CICC',nota:'5'},
+  {id:4,emp_id:4,tipo:'Advertência Escrita',data:'2026-02-20',motivo:'Descumprimento de checklist interno (fictício)',responsavel:'RH Movisafe',nota:''},
+  {id:5,emp_id:8,tipo:'Avaliação de Desempenho',data:'2025-11-15',motivo:'Excelente análise de risco no período (fictício)',responsavel:'Gerência CICC',nota:'5'},
+  {id:6,emp_id:10,tipo:'Elogio',data:'2026-03-10',motivo:'Coordenação exemplar em simulação (fictício)',responsavel:'Superintendência',nota:'5'},
+  ],
+  docFiles: {}
+};
+
+const savedRaw = (()=>{ try { return localStorage.getItem(STORAGE_KEY); } catch(e){ return null; } })();
+const savedData = savedRaw ? (()=>{ try { return JSON.parse(savedRaw); } catch(e){ return null; } })() : null;
+
+let employees = savedData && Array.isArray(savedData.employees) ? savedData.employees : DEFAULT_DATA.employees;
+let atestados = savedData && Array.isArray(savedData.atestados) ? savedData.atestados : DEFAULT_DATA.atestados;
+let disciplinas = savedData && Array.isArray(savedData.disciplinas) ? savedData.disciplinas : DEFAULT_DATA.disciplinas;
+const docFiles = savedData && savedData.docFiles ? savedData.docFiles : {};
+const docKeys = ['rg','ctps','cpf','pis','reservista','residencia','docs-profissionais','atestado-adm','foto','titulo-doc','escolaridade-doc','cnh-doc','casamento','nasc-filhos','vacina','freq-escolar'];
+const docPriority = {rg:'imp',ctps:'imp',cpf:'imp',pis:'imp',reservista:'imp',residencia:'imp','docs-profissionais':'imp','atestado-adm':'nec',foto:'nec','titulo-doc':'nec','escolaridade-doc':'nec','cnh-doc':'nec',casamento:'opc','nasc-filhos':'opc',vacina:'opc','freq-escolar':'opc'};
+const DOC_LABELS = {rg:'Carteira de Identidade (RG)',ctps:'CTPS',cpf:'CPF',pis:'PIS/PASEP',reservista:'Cert. de Reservista',residencia:'Comp. de Residência','docs-profissionais':'Docs Profissionais','atestado-adm':'Atestado Admissional',foto:'Foto 3×4','titulo-doc':'Título de Eleitor','escolaridade-doc':'Comp. de Escolaridade','cnh-doc':'CNH',casamento:'Cert. de Casamento','nasc-filhos':'Cert. Nasc. Filhos',vacina:'Cart. de Vacinação','freq-escolar':'Comp. Freq. Escolar'};
+let editingId = null;
+let filterEmpresa = 'todos';
+let currentPdfData = null;
+
+// ── NAVIGATION ───────────────────────────────────────────────────────────────
+function navTo(el, page) {
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  const titleText = el.textContent.trim().replace(/\d+$/,'').trim();
+  document.getElementById('page-title').textContent = titleText;
+  if(page==='funcionarios') renderEmployees();
+  if(page==='ferias') renderFerias();
+  if(page==='atestados') renderAtestados();
+  if(page==='disciplina') renderDisciplina();
+  if(page==='esocial') renderEsocial();
+  if(page==='alertas') renderAlertas();
+  if(page==='dashboard') updateDashboard();
+}
+
+function switchTab(btn, tabId) {
+  const modal = btn.closest('.modal-body');
+  modal.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  modal.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+}
+
+// ── MODAL ────────────────────────────────────────────────────────────────────
+function openModal(mode, id=null) {
+  editingId = id;
+  clearForm();
+  if(mode==='edit' && id) {
+    const emp = employees.find(e=>e.id===id);
+    if(emp) fillForm(emp);
+    document.getElementById('modal-func-title').textContent = 'Editar Funcionário';
+  } else {
+    document.getElementById('modal-func-title').textContent = 'Novo Funcionário';
+    document.getElementById('f-admissao').value = new Date().toISOString().split('T')[0];
+  }
+  populateEmpSelects();
+  resetDocTab();
+  const modal = document.querySelector('#modal-funcionario .modal-body');
+  modal.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  modal.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  modal.querySelector('.tab-btn').classList.add('active');
+  document.getElementById('tab-dados').classList.add('active');
+  document.getElementById('modal-funcionario').classList.add('open');
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function openAtestadoModal() {
+  populateEmpSelects();
+  document.getElementById('at-data').value = new Date().toISOString().split('T')[0];
+  document.getElementById('at-dias-input').value = '1';
+  document.getElementById('at-cid').value = '';
+  document.getElementById('at-medico').value = '';
+  document.getElementById('at-hospital').value = '';
+  document.getElementById('at-obs').value = '';
+  document.getElementById('modal-atestado').classList.add('open');
+}
+
+function openDisciplinaModal() {
+  populateEmpSelects();
+  document.getElementById('disc-data').value = new Date().toISOString().split('T')[0];
+  document.getElementById('disc-motivo').value = '';
+  document.getElementById('disc-responsavel').value = '';
+  document.getElementById('modal-disciplina').classList.add('open');
+}
+
+function openSettings() {
+  const isDark = document.body.classList.contains('dark');
+  document.getElementById('dark-toggle').classList.toggle('on', isDark);
+  document.getElementById('theme-label').textContent = isDark ? 'Escuro' : 'Claro';
+  document.getElementById('modal-settings').classList.add('open');
+}
+
+function deleteEmployee(id){
+  const emp=employees.find(e=>e.id===id);
+  if(!emp) return;
+  const ok=confirm(`Excluir o funcionário "${emp.nome}"? Esta ação não pode ser desfeita.`);
+  if(!ok) return;
+  employees=employees.filter(e=>e.id!==id);
+  atestados=atestados.filter(a=>a.emp_id!==id);
+  disciplinas=disciplinas.filter(d=>d.emp_id!==id);
+  if(docFiles[id]) delete docFiles[id];
+  updateDashboard();
+  renderEmployees();
+  renderFerias();
+  renderAtestados();
+  renderDisciplina();
+  renderEsocial();
+  renderAlertas();
+  saveAll();
+}
+
+function populateEmpSelects() {
+  ['at-funcionario','disc-funcionario'].forEach(sid=>{
+    const sel = document.getElementById(sid);
+    if(!sel) return;
+    sel.innerHTML = employees.map(e=>`<option value="${e.id}">${e.nome} (${e.empresa})</option>`).join('');
+  });
+}
+
+// ── FORM ─────────────────────────────────────────────────────────────────────
+function clearForm() {
+  ['f-nome','f-cpf','f-rg','f-telefone','f-email','f-endereco','f-pis','f-ctps','f-cnh','f-titulo','f-mae','f-cargo','f-setor','f-salario','f-local','f-obs','f-pix','f-banco','f-conta','f-naturalidade','f-nacionalidade'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['f-empresa','f-status','f-sexo','f-civil','f-escolaridade','f-tipo-contrato','f-jornada','f-turno','f-experiencia','f-esocial-status','f-ferias-status','f-tipo-conta'].forEach(id=>{const el=document.getElementById(id);if(el)el.selectedIndex=0;});
+  ['f-nascimento','f-admissao','f-esocial','f-fim-experiencia','f-ferias-inicio','f-ferias-fim'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('f-ferias-gozadas').value='0';
+  document.getElementById('f-nacionalidade').value='Brasileira';
+  const img=document.getElementById('photo-preview'); img.style.display='none'; img.src='';
+  document.getElementById('photo-placeholder').style.display='';
+  currentPdfData=null;
+  document.getElementById('pdf-placeholder').style.display='';
+  document.getElementById('pdf-attached').style.display='none';
+}
+
+function fillForm(e) {
+  const s=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v||'';};
+  s('f-nome',e.nome);s('f-cpf',e.cpf);s('f-rg',e.rg);s('f-telefone',e.telefone);s('f-email',e.email);
+  s('f-endereco',e.endereco);s('f-pis',e.pis);s('f-ctps',e.ctps);s('f-cnh',e.cnh);s('f-titulo',e.titulo);
+  s('f-mae',e.mae);s('f-cargo',e.cargo);s('f-setor',e.setor);s('f-salario',e.salario);s('f-local',e.local);
+  s('f-obs',e.obs);s('f-pix',e.pix);s('f-banco',e.banco);s('f-conta',e.conta);
+  s('f-naturalidade',e.naturalidade);s('f-nacionalidade',e.nacionalidade||'Brasileira');
+  s('f-nascimento',e.nascimento);s('f-admissao',e.admissao);s('f-esocial',e.esocial);
+  s('f-fim-experiencia',e.fim_experiencia);s('f-ferias-inicio',e.ferias_inicio);s('f-ferias-fim',e.ferias_fim);
+  s('f-ferias-gozadas',e.ferias_gozadas||0);
+  const ss=(id,v)=>{const el=document.getElementById(id);if(el){for(let o of el.options)if(o.value===v){o.selected=true;break;}}};
+  ss('f-empresa',e.empresa);ss('f-status',e.status);ss('f-sexo',e.sexo);ss('f-civil',e.civil);
+  ss('f-escolaridade',e.escolaridade);ss('f-tipo-contrato',e.tipo_contrato);ss('f-jornada',e.jornada);
+  ss('f-turno',e.turno);ss('f-experiencia',e.experiencia);ss('f-esocial-status',e.esocial_status);
+  ss('f-ferias-status',e.ferias_status);ss('f-tipo-conta',e.tipo_conta);
+  if(e.foto){const img=document.getElementById('photo-preview');img.src=e.foto;img.style.display='block';document.getElementById('photo-placeholder').style.display='none';}
+  if(e.contrato_pdf){currentPdfData=e.contrato_pdf;showPdfAttached();}
+}
+
+function saveEmployee() {
+  const g=id=>(document.getElementById(id)||{}).value||'';
+  const nome=g('f-nome'); if(!nome){alert('Nome é obrigatório!');return;}
+  const obj={
+    id:editingId||(Date.now()),nome,cpf:g('f-cpf'),rg:g('f-rg'),nascimento:g('f-nascimento'),
+    sexo:g('f-sexo'),civil:g('f-civil'),telefone:g('f-telefone'),email:g('f-email'),
+    endereco:g('f-endereco'),pis:g('f-pis'),ctps:g('f-ctps'),cnh:g('f-cnh'),titulo:g('f-titulo'),
+    escolaridade:g('f-escolaridade'),mae:g('f-mae'),naturalidade:g('f-naturalidade'),nacionalidade:g('f-nacionalidade'),
+    empresa:g('f-empresa'),status:g('f-status'),cargo:g('f-cargo'),setor:g('f-setor'),
+    admissao:g('f-admissao'),esocial:g('f-esocial'),esocial_status:g('f-esocial-status'),
+    tipo_contrato:g('f-tipo-contrato'),salario:g('f-salario'),jornada:g('f-jornada'),
+    turno:g('f-turno'),local:g('f-local'),experiencia:g('f-experiencia'),
+    fim_experiencia:g('f-fim-experiencia'),banco:g('f-banco'),conta:g('f-conta'),
+    tipo_conta:g('f-tipo-conta'),pix:g('f-pix'),obs:g('f-obs'),
+    ferias_inicio:g('f-ferias-inicio'),ferias_fim:g('f-ferias-fim'),
+    ferias_gozadas:parseInt(g('f-ferias-gozadas'))||0,ferias_status:g('f-ferias-status'),
+    foto:document.getElementById('photo-preview').src||'',
+    contrato_pdf:currentPdfData||null,
+  };
+  if(!editingId && docFiles['__new__']){
+    docFiles[obj.id]=docFiles['__new__'];
+    delete docFiles['__new__'];
+  }
+  if(editingId){const i=employees.findIndex(e=>e.id===editingId);if(i>-1)employees[i]=obj;}
+  else employees.push(obj);
+  closeModal('modal-funcionario');
+  renderEmployees(); updateDashboard();
+  saveAll();
+}
+
+function saveAtestado() {
+  const g=id=>(document.getElementById(id)||{}).value||'';
+  const emp_id=parseInt(g('at-funcionario'));
+  const dias = parseInt(document.getElementById('at-dias-input').value)||1;
+  if(!emp_id||!g('at-data')){alert('Preencha os campos obrigatórios!');return;}
+  atestados.push({id:Date.now(),emp_id,data:g('at-data'),cid:g('at-cid'),dias,medico:g('at-medico'),hospital:g('at-hospital'),obs:g('at-obs'),status:'Em análise'});
+  closeModal('modal-atestado'); renderAtestados();
+  saveAll();
+}
+
+function saveDisciplina() {
+  const g=id=>(document.getElementById(id)||{}).value||'';
+  const emp_id=parseInt(g('disc-funcionario'));
+  if(!emp_id||!g('disc-data')||!g('disc-motivo')){alert('Preencha os campos obrigatórios!');return;}
+  disciplinas.push({id:Date.now(),emp_id,tipo:g('disc-tipo'),data:g('disc-data'),motivo:g('disc-motivo'),responsavel:g('disc-responsavel'),nota:g('disc-nota')});
+  closeModal('modal-disciplina'); renderDisciplina();
+  saveAll();
+}
+
+// ── PHOTO ────────────────────────────────────────────────────────────────────
+function previewPhoto(input) {
+  if(input.files&&input.files[0]){
+    const r=new FileReader();
+    r.onload=e=>{
+      const img=document.getElementById('photo-preview');
+      img.src=e.target.result;img.style.display='block';
+      document.getElementById('photo-placeholder').style.display='none';
+      saveAll();
+    };
+    r.readAsDataURL(input.files[0]);
+  }
+}
+
+// ── PDF CONTRACT ─────────────────────────────────────────────────────────────
+function handlePdfFile(file) {
+  if(!file||file.type!=='application/pdf'){alert('Selecione um arquivo PDF válido.');return;}
+  const r=new FileReader();
+  r.onload=e=>{
+    currentPdfData={name:file.name,size:file.size,dataUrl:e.target.result};
+    showPdfAttached();
+    saveAll();
+  };
+  r.readAsDataURL(file);
+}
+function handlePdfDrop(e) {e.preventDefault();document.getElementById('pdf-drop-zone').classList.remove('drag-over');handlePdfFile(e.dataTransfer.files[0]);}
+function showPdfAttached() {
+  if(!currentPdfData) return;
+  document.getElementById('pdf-placeholder').style.display='none';
+  document.getElementById('pdf-attached').style.display='block';
+  document.getElementById('pdf-name').textContent=currentPdfData.name;
+  const kb=Math.round(currentPdfData.size/1024);
+  document.getElementById('pdf-size').textContent=kb<1024?kb+' KB':(kb/1024).toFixed(1)+' MB';
+}
+function removePdf(e) {e.stopPropagation();currentPdfData=null;document.getElementById('pdf-placeholder').style.display='';document.getElementById('pdf-attached').style.display='none';document.getElementById('pdf-input').value='';saveAll();}
+function viewPdf(e) {
+  e.stopPropagation();
+  if(!currentPdfData||!currentPdfData.dataUrl) return;
+  const w=window.open();
+  if(!w) return;
+  w.document.write('<iframe src="'+currentPdfData.dataUrl+'" style="width:100%;height:100%;border:none;margin:0;"></iframe>');
+}
+
+// ── DOCUMENTOS ───────────────────────────────────────────────────────────────
+function docUploaded(key, input) {
+  if(!input.files||!input.files[0]) return;
+  const file=input.files[0];
+  const empId=editingId||'__new__';
+  if(!docFiles[empId]) docFiles[empId]={};
+  const r=new FileReader();
+  r.onload=function(e){
+    docFiles[empId][key]={name:file.name,size:file.size,type:file.type,dataUrl:e.target.result};
+    renderDocItem(key,empId); updateDocProgress();
+    saveAll();
+  };
+  r.readAsDataURL(file);
+}
+function renderDocItem(key, empId) {
+  const data=docFiles[empId]&&docFiles[empId][key];
+  const badge=document.getElementById('badge-'+key);
+  if(!data||!badge) return;
+  badge.textContent='AOK'; badge.className='doc-badge badge-ok';
+  const btn=document.getElementById('btn-'+key);
+  if(!btn) return;
+  const shortName=data.name.length>14?data.name.slice(0,14)+'…':data.name;
+  const isImg=data.type&&data.type.startsWith('image/');
+  let html='<div class="doc-actions" id="actions-'+key+'"'+(isImg?' onmouseenter="showDocHover(\''+key+'\')" onmouseleave="hideDocHover()"':'')+'>';
+  html+='<span class="doc-filename" title="'+data.name+'">📎 '+shortName+'</span>';
+  if(isImg) html+='<button class="doc-action-btn preview" onclick="previewDoc(\''+key+'\')">🔍 Ver</button>';
+  html+='<button class="doc-action-btn open" onclick="openDoc(\''+key+'\')">↗ Abrir</button>';
+  html+='<button class="doc-action-btn remove" onclick="removeDoc(\''+key+'\')">✕</button>';
+  html+='</div>';
+  btn.outerHTML=html;
+  const docEl=document.getElementById('doc-'+key);
+  if(docEl){docEl.style.background='rgba(5,150,105,.12)';setTimeout(()=>{docEl.style.background='';},1000);}
+}
+function previewDoc(key) {
+  const empId=editingId||'__new__';
+  const data=docFiles[empId]&&docFiles[empId][key];
+  if(!data) return;
+  document.getElementById('doc-preview-title').textContent=DOC_LABELS[key]||key;
+  document.getElementById('doc-preview-img').src=data.dataUrl;
+  document.getElementById('doc-preview-overlay').style.display='flex';
+}
+function openDoc(key) {
+  const empId=editingId||'__new__';
+  const data=docFiles[empId]&&docFiles[empId][key];
+  if(!data||!data.dataUrl) return;
+  const w=window.open();
+  if(!w) return;
+  // Open the data URL directly to avoid string-based HTML injection issues.
+  w.location.href = data.dataUrl;
+}
+function removeDoc(key) {
+  const empId=editingId||'__new__';
+  if(docFiles[empId]) delete docFiles[empId][key];
+  const actEl=document.getElementById('actions-'+key);
+  if(actEl) actEl.outerHTML=`<button class="doc-upload-btn" id="btn-${key}" onclick="document.getElementById('file-${key}').click()">📎 Anexar</button>`;
+  const badge=document.getElementById('badge-'+key);
+  if(badge){const pri=docPriority[key];badge.textContent=pri==='opc'?'N/A':'Pendente';badge.className='doc-badge '+(pri==='imp'?'badge-imp':pri==='nec'?'badge-nec':'badge-opc');}
+  const inp=document.getElementById('file-'+key); if(inp) inp.value='';
+  updateDocProgress();
+  saveAll();
+}
+function showDocHover(key){
+  const empId=editingId||'__new__';
+  const data=docFiles[empId]&&docFiles[empId][key];
+  if(!data||!data.dataUrl) return;
+  const hover=document.getElementById('doc-hover');
+  const img=document.getElementById('doc-hover-img');
+  if(!hover||!img) return;
+  img.src=data.dataUrl;
+  hover.style.display='block';
+}
+function hideDocHover(){
+  const hover=document.getElementById('doc-hover');
+  if(hover) hover.style.display='none';
+}
+document.addEventListener('mousemove', (e)=>{
+  const hover=document.getElementById('doc-hover');
+  if(!hover||hover.style.display!=='block') return;
+  // Auto-hide when no doc-actions is hovered anymore.
+  if(!document.querySelector('.doc-actions:hover')) { hideDocHover(); return; }
+  const pad=14;
+  let x=e.clientX+pad, y=e.clientY+pad;
+  if(x+240>window.innerWidth) x=e.clientX-240;
+  if(y+160>window.innerHeight) y=e.clientY-160;
+  hover.style.left=x+'px';
+  hover.style.top=y+'px';
+});
+document.addEventListener('scroll', hideDocHover, true);
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') hideDocHover(); });
+function updateDocProgress() {
+  const empId=editingId||'__new__';
+  const uploaded=docFiles[empId]?Object.keys(docFiles[empId]).length:0;
+  const pct=Math.round(uploaded/docKeys.length*100);
+  const fill=document.getElementById('doc-progress-fill');
+  const label=document.getElementById('doc-progress-text');
+  if(fill) fill.style.width=pct+'%';
+  if(label) label.textContent=uploaded+' / '+docKeys.length;
+}
+
+function saveAll(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({employees,atestados,disciplinas,docFiles}));
+  }catch(e){}
+}
+function resetDocTab() {
+  const empId=editingId||'__new__';
+  docKeys.forEach(key=>{
+    const actEl=document.getElementById('actions-'+key);
+    if(actEl) actEl.outerHTML=`<button class="doc-upload-btn" id="btn-${key}" onclick="document.getElementById('file-${key}').click()">📎 Anexar</button>`;
+    const badge=document.getElementById('badge-'+key);
+    const inp=document.getElementById('file-'+key);
+    if(inp) inp.value='';
+    if(badge){const pri=docPriority[key];badge.textContent=pri==='opc'?'N/A':'Pendente';badge.className='doc-badge '+(pri==='imp'?'badge-imp':pri==='nec'?'badge-nec':'badge-opc');}
+  });
+  if(docFiles[empId]){Object.keys(docFiles[empId]).forEach(key=>renderDocItem(key,empId));}
+  updateDocProgress();
+}
+
+// ── HELPERS ──────────────────────────────────────────────────────────────────
+const avatarColors=['#2563eb','#7c3aed','#059669','#b45309','#be185d','#dc2626','#0891b2','#65a30d','#d97706','#7e22ce'];
+function avatarColor(n){let h=0;for(let c of n)h=(h+c.charCodeAt(0))%avatarColors.length;return avatarColors[h];}
+function initials(n){return n.split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();}
+function empAvatar(emp){
+  const src = (emp.foto && typeof emp.foto === 'string' && emp.foto.startsWith('data:')) ? emp.foto : '';
+  if(src) return `<div class="emp-avatar"><img src="${src}" style="width:100%;height:100%;object-fit:cover;border-radius:50%"></div>`;
+  return `<div class="emp-avatar" style="background:${avatarColor(emp.nome)}">${initials(emp.nome)}</div>`;
+}
+function empresaBadge(emp){return emp.empresa==='Movisafe'?'<span class="badge badge-movisafe">🛡 Movisafe</span>':'<span class="badge badge-smartcicc">🖥 Smart CICC</span>';}
+function statusBadge(s){
+  if(s==='Ativo') return'<span class="badge badge-ativo">✅ Ativo</span>';
+  if(s==='Em Férias') return'<span class="badge badge-ferias">🌴 Em Férias</span>';
+  if(s==='Afastado') return'<span class="badge badge-afastado">🩺 Afastado</span>';
+  if(s==='Experiência') return'<span class="badge badge-experiencia">🧪 Experiência</span>';
+  return`<span class="badge" style="background:rgba(100,116,139,.15);color:var(--text3)">${s}</span>`;
+}
+function fmtDate(d){if(!d)return'—';const p=d.split('-');return p.length===3?`${p[2]}/${p[1]}/${p[0]}`:d;}
+
+// ── RENDER EMPLOYEES ──────────────────────────────────────────────────────────
+function filterTab(btn, empresa) {
+  document.querySelectorAll('.ftab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active'); filterEmpresa=empresa; renderEmployees();
+}
+function filterEmployees(){renderEmployees(document.getElementById('search-input').value.toLowerCase());}
+function renderEmployees(q='') {
+  const tbody=document.getElementById('emp-table-rows');
+  let list=employees.filter(e=>e.status!=='Desligado');
+  if(filterEmpresa!=='todos') list=list.filter(e=>e.empresa===filterEmpresa);
+  if(q) list=list.filter(e=>e.nome.toLowerCase().includes(q)||(e.cargo||'').toLowerCase().includes(q)||(e.cpf||'').includes(q));
+  if(!list.length){tbody.innerHTML='<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text3)">Nenhum funcionário encontrado</td></tr>';return;}
+  tbody.innerHTML=list.map(emp=>`<tr>
+    <td><div class="emp-info">${empAvatar(emp)}<div><div class="emp-name">${emp.nome}</div><div class="emp-role">${emp.cargo}</div></div></div></td>
+    <td>${empresaBadge(emp)}</td>
+    <td style="font-size:12px;color:var(--text2)">${emp.setor||'—'}</td>
+    <td style="font-size:12px;color:var(--text2)">${fmtDate(emp.admissao)}</td>
+    <td>${emp.esocial_status==='Incluído'?'<span style="color:var(--green);font-size:12px">✅ Incluído</span>':emp.esocial_status==='Pendente'?'<span style="color:var(--amber);font-size:12px">⏳ Pendente</span>':'<span style="color:var(--red);font-size:12px">❌ Erro</span>'}</td>
+    <td>${statusBadge(emp.status)}</td>
+    <td>
+      <button class="action-btn" onclick="openModal('edit',${emp.id})">✏️ Editar</button>
+      <button class="action-btn danger" onclick="deleteEmployee(${emp.id})">🗑 Excluir</button>
+    </td>
+  </tr>`).join('');
+}
+
+// ── RENDER FÉRIAS ─────────────────────────────────────────────────────────────
+function renderFerias() {
+  const today=new Date(); let prog=0,gozo=0,gozadas=0,atrasadas=0;
+  const tbody=document.getElementById('ferias-rows');
+  tbody.innerHTML=employees.filter(e=>e.status!=='Desligado').map(emp=>{
+    const adm=emp.admissao?new Date(emp.admissao):null;
+    const meses=adm?Math.floor((today-adm)/(1000*60*60*24*30)):0;
+    const diasDir=meses>=12?30:0;
+    const gozado=emp.ferias_gozadas||0;
+    const saldo=Math.max(0,diasDir-gozado);
+    const pct=diasDir>0?Math.min(100,Math.round(gozado/diasDir*100)):0;
+    let sit='—',sitC='';
+    if(emp.ferias_status==='Atrasado'){sit='⚠️ Vencidas';sitC='color:var(--red)';atrasadas++;}
+    else if(emp.ferias_status==='Em gozo'){sit='🌴 Em Gozo';sitC='color:var(--amber)';gozo++;}
+    else if(emp.ferias_status==='Programado'){sit='📅 Programado';sitC='color:var(--accent)';prog++;}
+    else if(emp.ferias_status==='Concluído'){sit='✅ Concluída';sitC='color:var(--green)';gozadas++;}
+    return`<tr>
+      <td><div class="emp-info">${empAvatar(emp)}<div class="emp-name">${emp.nome}</div></div></td>
+      <td>${empresaBadge(emp)}</td>
+      <td style="font-size:12px;color:var(--text2)">${fmtDate(emp.admissao)}</td>
+      <td style="font-family:'Outfit';font-weight:700;color:var(--accent)">${diasDir}</td>
+      <td><div style="font-size:13px;font-weight:500">${gozado} dias</div><div class="ferias-bar-wrap"><div class="ferias-bar" style="width:${pct}%"></div></div><div style="font-size:10px;color:var(--text3);margin-top:2px">${pct}%</div></td>
+      <td style="font-family:'Outfit';font-weight:700;color:${saldo>0?'var(--amber)':'var(--green)'}">${saldo}</td>
+      <td style="font-size:12px;color:var(--text2)">${fmtDate(emp.ferias_inicio)||'—'}</td>
+      <td><span style="${sitC};font-size:12px;font-weight:600">${sit}</span></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('f-programadas').textContent=prog;
+  document.getElementById('f-gozo').textContent=gozo;
+  document.getElementById('f-gozadas').textContent=gozadas;
+  document.getElementById('f-atrasadas').textContent=atrasadas;
+}
+
+// ── RENDER ATESTADOS ──────────────────────────────────────────────────────────
+function renderAtestados() {
+  const tbody=document.getElementById('atestados-rows');
+  const totalDias=atestados.reduce((s,a)=>s+a.dias,0);
+  const hoje=new Date().toISOString().slice(0,7);
+  document.getElementById('at-total').textContent=atestados.length;
+  document.getElementById('at-dias').textContent=totalDias;
+  document.getElementById('at-mes').textContent=atestados.filter(a=>a.data.startsWith(hoje)).length;
+  if(!atestados.length){tbody.innerHTML='<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text3)">Nenhum atestado registrado</td></tr>';return;}
+  tbody.innerHTML=atestados.map(at=>{
+    const emp=employees.find(e=>e.id===at.emp_id); if(!emp) return'';
+    return`<tr>
+      <td><div class="emp-info">${empAvatar(emp)}<div class="emp-name">${emp.nome}</div></div></td>
+      <td>${empresaBadge(emp)}</td>
+      <td style="font-size:12px;color:var(--text2)">${fmtDate(at.data)}</td>
+      <td><span style="background:rgba(37,99,235,.1);color:var(--accent);padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600">${at.cid||'—'}</span></td>
+      <td><span style="font-family:'Outfit';font-weight:700;color:var(--amber);font-size:16px">${at.dias}</span></td>
+      <td style="font-size:12px;color:var(--text2)">${at.medico||'—'}</td>
+      <td style="font-size:12px;color:var(--text2)">${at.hospital||'—'}</td>
+      <td>${at.status==='Validado'?'<span style="color:var(--green);font-size:12px;font-weight:600">✅ Validado</span>':'<span style="color:var(--amber);font-size:12px;font-weight:600">⏳ Em análise</span>'}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── RENDER DISCIPLINA ─────────────────────────────────────────────────────────
+function renderDisciplina() {
+  const tbody=document.getElementById('disciplina-rows');
+  document.getElementById('d-advertencias').textContent=disciplinas.filter(d=>d.tipo.includes('Advertência')).length;
+  document.getElementById('d-suspensoes').textContent=disciplinas.filter(d=>d.tipo==='Suspensão').length;
+  document.getElementById('d-avaliacoes').textContent=disciplinas.filter(d=>d.tipo.includes('Avaliação')).length;
+  document.getElementById('d-elogios').textContent=disciplinas.filter(d=>d.tipo==='Elogio').length;
+  if(!disciplinas.length){tbody.innerHTML='<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text3)">Nenhum registro disciplinar</td></tr>';return;}
+  tbody.innerHTML=disciplinas.map(d=>{
+    const emp=employees.find(e=>e.id===d.emp_id); if(!emp) return'';
+    const c=d.tipo.includes('Advertência')?'var(--amber)':d.tipo==='Suspensão'?'var(--red)':d.tipo==='Elogio'?'var(--green)':'var(--accent)';
+    return`<tr>
+      <td><div class="emp-info">${empAvatar(emp)}<div class="emp-name">${emp.nome}</div></div></td>
+      <td>${empresaBadge(emp)}</td>
+      <td><span style="color:${c};font-size:12px;font-weight:600">${d.tipo}</span></td>
+      <td style="font-size:12px;color:var(--text2)">${fmtDate(d.data)}</td>
+      <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${d.motivo}</td>
+      <td style="font-size:12px;color:var(--text2)">${d.responsavel||'—'}</td>
+      <td style="font-size:14px">${d.nota?'⭐'.repeat(parseInt(d.nota)):'—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── RENDER E-SOCIAL ───────────────────────────────────────────────────────────
+function renderEsocial() {
+  const tbody=document.getElementById('esocial-rows');
+  tbody.innerHTML=employees.filter(e=>e.status!=='Desligado').map(emp=>{
+    let sit='';
+    if(emp.esocial_status==='Incluído') sit='<div class="esocial-status" style="margin-bottom:0"><div class="dot dot-green"></div><span style="font-size:12px;color:var(--green);font-weight:600">✅ Incluído</span></div>';
+    else if(emp.esocial_status==='Pendente') sit='<div class="esocial-status" style="margin-bottom:0"><div class="dot dot-amber"></div><span style="font-size:12px;color:var(--amber);font-weight:600">⏳ Pendente</span></div>';
+    else sit='<div class="esocial-status" style="margin-bottom:0"><div class="dot dot-red-s"></div><span style="font-size:12px;color:var(--red);font-weight:600">❌ Erro</span></div>';
+    return`<tr>
+      <td><div class="emp-info">${empAvatar(emp)}<div><div class="emp-name">${emp.nome}</div><div class="emp-role">${emp.cargo}</div></div></div></td>
+      <td>${empresaBadge(emp)}</td>
+      <td style="font-size:12px;color:var(--text2);font-family:monospace">${emp.cpf||'—'}</td>
+      <td style="font-size:12px;color:var(--text2)">${fmtDate(emp.admissao)}</td>
+      <td style="font-size:12px;color:var(--text2)">${fmtDate(emp.esocial)||'—'}</td>
+      <td>${sit}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── DASHBOARD ──────────────────────────────────────────────────────────────────
+function updateDashboard() {
+  const total=employees.filter(e=>e.status!=='Desligado');
+  document.getElementById('cnt-movisafe').textContent=total.filter(e=>e.empresa==='Movisafe').length;
+  document.getElementById('cnt-smartcicc').textContent=total.filter(e=>e.empresa==='Smart CICC').length;
+  document.getElementById('cnt-experiencia').textContent=total.filter(e=>e.status==='Experiência').length;
+  document.getElementById('cnt-total').textContent=total.length;
+  const T=total.length||1;
+  const a=total.filter(e=>e.status==='Ativo').length;
+  const f=total.filter(e=>e.status==='Em Férias').length;
+  const af=total.filter(e=>e.status==='Afastado').length;
+  const ex=total.filter(e=>e.status==='Experiência').length;
+  ['ativos','ferias','afastados','exp'].forEach((k,i)=>{
+    const v=[a,f,af,ex][i];
+    const el=document.getElementById('dash-'+k);
+    const bar=document.getElementById('bar-'+k);
+    if(el) el.textContent=v;
+    if(bar) bar.style.width=(v/T*100)+'%';
+  });
+  const atr=employees.filter(e=>e.ferias_status==='Atrasado');
+  document.getElementById('alerta-ferias-atrasadas').textContent=atr.length?atr.map(e=>e.nome.split(' ')[0]).join(', ')+' têm férias vencidas':'Nenhuma pendência ✅';
+  const exp=employees.filter(e=>e.status==='Experiência');
+  document.getElementById('alerta-experiencia').textContent=exp.length?exp.map(e=>e.nome.split(' ')[0]).join(', ')+' em período de experiência':'Nenhum em experiência';
+  const prog=employees.filter(e=>e.ferias_status==='Programado');
+  document.getElementById('alerta-ferias-prog').textContent=prog.length?prog.map(e=>e.nome.split(' ')[0]).join(', ')+' com férias programadas':'Nenhuma programada';
+  const pend=employees.filter(e=>e.esocial_status==='Pendente');
+  document.getElementById('alerta-esocial').textContent=pend.length?pend.map(e=>e.nome.split(' ')[0]).join(', ')+' pendentes de inclusão':'Todos incluídos ✅';
+
+  // update alert badge
+  const totalAlerts = atr.length + exp.length + pend.length;
+  const badge = document.getElementById('alert-badge-count');
+  if(badge) badge.textContent = totalAlerts;
+
+  const rec=[...total].sort((a,b)=>b.admissao>a.admissao?1:-1).slice(0,6);
+  document.getElementById('dash-recent-rows').innerHTML=rec.map(emp=>`<tr>
+    <td><div class="emp-info">${empAvatar(emp)}<div><div class="emp-name">${emp.nome}</div><div class="emp-role">${emp.cargo}</div></div></div></td>
+    <td>${empresaBadge(emp)}</td>
+    <td style="font-size:12px;color:var(--text2)">${emp.cargo}</td>
+    <td style="font-size:12px;color:var(--text2)">${fmtDate(emp.admissao)}</td>
+    <td>${statusBadge(emp.status)}</td>
+  </tr>`).join('');
+}
+
+// ── ALERTAS ───────────────────────────────────────────────────────────────────
+function renderAlertas() {
+  const div=document.getElementById('alertas-content');
+  const list=[];
+  employees.filter(e=>e.status!=='Desligado').forEach(emp=>{
+    if(emp.ferias_status==='Atrasado') list.push({t:'error',i:'⚠️',title:`Férias vencidas — ${emp.nome}`,sub:`${emp.empresa} · Admissão: ${fmtDate(emp.admissao)}`});
+    if(emp.status==='Experiência'&&emp.fim_experiencia){
+      const dias=Math.ceil((new Date(emp.fim_experiencia)-new Date())/(1000*60*60*24));
+      list.push({t:'warn',i:'🧪',title:`Experiência encerrando em ${dias} dia(s) — ${emp.nome}`,sub:`${emp.empresa} · Término: ${fmtDate(emp.fim_experiencia)}`});
+    }
+    if(emp.esocial_status==='Pendente') list.push({t:'success',i:'📋',title:`e-Social pendente — ${emp.nome}`,sub:`${emp.empresa} · Admissão: ${fmtDate(emp.admissao)}`});
+    if(emp.ferias_status==='Programado') list.push({t:'info',i:'🌴',title:`Férias programadas — ${emp.nome}`,sub:`${emp.empresa} · Início: ${fmtDate(emp.ferias_inicio)}`});
+    if(emp.status==='Afastado') list.push({t:'warn',i:'🩺',title:`Funcionário afastado — ${emp.nome}`,sub:`${emp.empresa} · ${emp.obs||'Afastamento médico'}`});
+  });
+  if(!list.length){div.innerHTML='<div class="empty-state"><div class="empty-icon">🎉</div><div style="font-size:14px">Nenhum alerta pendente!</div></div>';return;}
+  div.innerHTML=list.map(a=>`<div class="notif notif-${a.t}"><div class="notif-icon">${a.i}</div><div class="notif-body"><div class="notif-title">${a.title}</div><div class="notif-sub">${a.sub}</div></div></div>`).join('');
+}
+
+// ── DARK MODE ─────────────────────────────────────────────────────────────────
+function toggleDark() {
+  document.body.classList.toggle('dark');
+  const isDark=document.body.classList.contains('dark');
+  document.getElementById('dark-toggle').classList.toggle('on',isDark);
+  document.getElementById('theme-label').textContent=isDark?'Escuro':'Claro';
+  try{localStorage.setItem('rh-theme',isDark?'dark':'light');}catch(e){}
+}
+(function(){try{if(localStorage.getItem('rh-theme')==='dark'){document.body.classList.add('dark');}}catch(e){}})();
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+updateDashboard();
+renderEmployees();
+</script>
+</body>
+</html>
